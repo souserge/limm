@@ -24,6 +24,7 @@ class Mover { // base class of a Mover object (player or NPC)
     if (!this.isGrounded) { // constrain the mover's ability to steer in air
       this.acc.x = constrain(this.acc.x,
                             -MAX_AIR_HORIZONTAL_ACC, MAX_AIR_HORIZONTAL_ACC);
+      this.acc.x *= 0.1;
     }
 
     this.acc.mult(dt); // multiply by delta time
@@ -77,11 +78,12 @@ class Mover { // base class of a Mover object (player or NPC)
   }
 
   move() { // apply horizontal moveForce
+    const LIMIT = this.isGrounded ? 1 : AIR_HORIZONTAL_MOVE_FORCE;
     if (this.input.right) {
-      this.applyForce(createVector(this.moveForce.x, 0));
+      this.applyForce(createVector(LIMIT*this.moveForce.x, 0));
     }
     if (this.input.left) {
-      this.applyForce(createVector(-this.moveForce.x, 0));
+      this.applyForce(createVector(-LIMIT*this.moveForce.x, 0));
     }
   }
 
