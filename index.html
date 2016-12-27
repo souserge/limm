@@ -1,12 +1,26 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  <!-- WebSockets, for multiplayer - not needed for now
+  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script> -->
+
+  <!-- non-minified versions
   <script language="javascript" type="text/javascript" src="lib/p5.js"></script>
   <script language="javascript" src="lib/p5.dom.js"></script>
   <script language="javascript" src="lib/p5.sound.js"></script>
+  <script language="javascript" src="lib/p5.collide2d.js"></script> -->
 
+  <!-- We don't need these for now
+  <script language="javascript" src="lib/min/p5.dom.min.js"></script>
+  <script language="javascript" src="lib/min/p5.sound.min.js"></script> -->
+
+  <script language="javascript" type="text/javascript" src="lib/min/p5.min.js"></script>
+  <script language="javascript" src="lib/min/p5.collide2d.min.js"></script>
+
+
+  <script language="javascript" src="classes/wall.js"></script>
   <script language="javascript" src="classes/mover.js"></script>
+  <script language="javascript" src="classes/gameSystem.js"></script>
 
   <script language="javascript" type="text/javascript" src="sketch.js"></script>
   <style> body {padding: 0; margin: 0; background-color: 0;} </style>
