@@ -1,7 +1,7 @@
 //import {Mover} from "./classes/mover.js";
 //import {Wall} from "./classes/wall.js";
 
-function preload() {
+function preload() { // will need it for loading textures, sounds and other files
 
 }
 

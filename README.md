@@ -2,7 +2,11 @@
 A rougelike with a stupid name and no concept.
 
 ## TODO:
-  * the player is sometimes stuck in walls, needs fix
+  * consider moving to a game engine (but remember that it's not cool)
+  * what's up with delta time?
+  * think about scaling the game (static size vs scaling)
+  * optimize. EVERY. THING.
+  * the player is sometimes stuck in walls, needs a fix
   * (related to the previous) optimize the collision system
   * change the current movement mechanics to something less frustrating
   * add a level system to support changing level rooms
