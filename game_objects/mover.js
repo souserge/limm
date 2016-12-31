@@ -1,37 +1,28 @@
-class Mover extends Entity { // base class of a Mover object (player or NPC)
-  constructor(x, y, wid, hei) { // set initial values
+class Mover extends Entity {
+  constructor(x, y, wid, hei) {
     super(x, y, wid, hei, true);
-    this.vel = createVector(0,0);   // velocity
-    this.acc = createVector(0,0);   // acceleration
-
-    this.moveForce = createVector(HORIZONTAL_MOVE_FORCE, VERTICAL_MOVE_FORCE);//..
-                                    // reflects the strength of the mover's legs
-    this.isGrounded = false; // true if is on ground, false otherwise
-    this.input = {up: false, down: false, right: false, left: false} // stores..
-                                            // the current state of user input
+    this.velX = 0;
+    this.velY = 0;
+    this.isGrounded = false;
+    this.input = {up: false, down: false, right: false, left: false}
   }
 
-  updateNetForce(dt) { // accumulate all the forces that..
-                    // act upon the mover at this moment
+  updateVel(dt) {
     this.keyCheck();
 
     this.gravity();
     this.moveX();
     this.moveY();
-
-    this.acc.mult(dt); // multiply by delta time
-    this.vel.add(this.acc); // change velocity
     this.applyFriction();
   }
 
-  updatePos() { // update the current position..
-  //update() was split into 2 parts in order to check for collisions in between
-    this.pos.add(this.vel); // change the position according to
-    this.acc.mult(0); // discard all forces (we add them again every update)
+  updatePos() {
+    this.posX += this.velX;
+    this.posY += this.velY;
   }
 
 
-  keyCheck() { // update the current state of user input
+  keyCheck() {
     this.input.left = keyIsDown(LEFT_ARROW);
     this.input.right = keyIsDown(RIGHT_ARROW);
     this.input.up = keyIsDown(UP_ARROW);
@@ -39,36 +30,32 @@ class Mover extends Entity { // base class of a Mover object (player or NPC)
 
   applyFriction() { // constrain velocity and add dampening
     if (!this.isGrounded) {
-      this.vel.y = constrain(this.vel.y,
-                            -MAX_VERTICAL_SPEED, MAX_VERTICAL_SPEED);
+      this.velY = constrain(this.velY,
+                            -Y_MAX_SP, Y_MAX_SP);
     }
     else {
-      this.vel.x *= WALL_FRICTION;
+      this.velX *= WALL_FRICTION;
     }
-    this.vel.x = constrain(this.vel.x,
-                          -MAX_HORIZONTAL_SPEED, MAX_HORIZONTAL_SPEED);
+    this.velX = constrain(this.velX,
+                          -X_MAX_SP, X_MAX_SP);
   }
 
-  applyForce(force) { // add a force to the acceleration
-    this.acc.add(force);
-  }
-
-  jump() { // add vertical moveForce
-    if (this.input.up) { // if the mover wants to jump
+  jump() {
+    if (this.input.up) {
       if (this.isGrounded) {
-        this.applyForce(createVector(0,-this.moveForce.y));
+        this.velY -= Y_MOVE_SP;
         this.isGrounded = false;
       }
-    } else if (this.vel.y < 0) {
-      this.vel.y *= 0.9;
+    } else if (this.velY < 0) {
+      this.velY *= 0.9;
     }
   }
 
-  gravity() { // apply gravity
-    this.applyForce(createVector(0,GRAVITY));
+  gravity() {
+    this.velY += GRAVITY;
   }
 
-  moveX() { // apply horizontal moveForce
+  moveX() {
     let mult = 0;
     if (this.input.left) {
       mult--;
@@ -77,10 +64,9 @@ class Mover extends Entity { // base class of a Mover object (player or NPC)
       mult++;
     }
     if (!this.isGrounded) {
-      mult *= AIR_HORIZONTAL_MOVE_MULT;
+      mult *= X_AIR_MOVE_SP;
     }
-
-    this.applyForce(createVector(mult*this.moveForce.x, 0));
+    this.velX += mult*X_MOVE_SP;
   }
 
   moveY() {
@@ -90,11 +76,9 @@ class Mover extends Entity { // base class of a Mover object (player or NPC)
     }
   }
 
-  render() { // draw on the screen
-    fill(255); // set the color of the mover to white
-    noStroke(); // do not draw borders
-    rect(this.pos.x, this.pos.y, this.wid, this.hei);
+  render() {
+    fill(255);
+    noStroke();
+    rect(this.posX, this.posY, this.wid, this.hei);
   }
 }
-
-//export {Mover};

@@ -7,7 +7,7 @@ class Wall extends Entity { // base class for walls (static objects)
     fill(200,100,200);
     noStroke();
     rectMode(CORNER); // draw from corner
-    rect(this.pos.x, this.pos.y, this.wid, this.hei);
+    rect(this.posX, this.posY, this.wid, this.hei);
   }
 }
 
