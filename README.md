@@ -9,7 +9,7 @@ A rougelike with a stupid name and no concept.
   - [ ] think about scaling the game (static size vs scaling)
   - [ ] optimize. EVERY. THING.
   - [ ] the player is sometimes stuck in walls, needs a fix (optimize the collision system)
-  - [ ] change the current movement mechanics to something less frustrating (add impusle (jerk) when changind directions)
+  - [ ] change the current movement mechanics to something less frustrating (add impusle (jerk) when changing directions)
   - [ ] add a level system to support changing level rooms
   - [ ] add an event handler
   - [ ] reconsider mechanics (forget about acceleration? dynamic map? moar random?)
@@ -52,7 +52,7 @@ A rougelike with a stupid name and no concept.
     * [p5.js, p5.sound, p5.collide2d, p5.play, (p5.dom, p5.scribble, p5.gui)](https://p5js.org/libraries/)
     * [phaser.io](http://phaser.io/)
     * [node.js](https://nodejs.org/en/) with [express.js](http://expressjs.com/) and [socket.io](http://socket.io/) (for multiplayer)
-    
+
 ### Guides and reference
   * [js game loops and timing](https://www.isaacsukin.com/news/2015/01/detailed-explanation-javascript-game-loops-and-timing#choosing-timestep)
   * [Optimizing p5.js code](https://github.com/processing/p5.js/wiki/Optimizing-p5.js-Code-for-Performance)
@@ -69,3 +69,4 @@ A rougelike with a stupid name and no concept.
   * [GDquest YouTube channel](https://www.youtube.com/channel/UCxboW7x0jZqFdvMdCFKTMsQ/featured)
   * [Photostorm (a lot of tutorials and examples)](photonstorm.com/)
   * [Mastering Markdown](https://guides.github.com/features/mastering-markdown/)
+  * [Open-source games](https://github.com/leereilly/games)

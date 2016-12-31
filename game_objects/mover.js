@@ -1,11 +1,9 @@
-class Mover { // base class of a Mover object (player or NPC)
-  constructor(x, y, r) { // set initial values
-
-    this.pos = createVector(x, y);  // position
+class Mover extends Entity { // base class of a Mover object (player or NPC)
+  constructor(x, y, wid, hei) { // set initial values
+    super(x, y, wid, hei, true);
     this.vel = createVector(0,0);   // velocity
     this.acc = createVector(0,0);   // acceleration
 
-    this.r =   r; //radius (size)
     this.moveForce = createVector(HORIZONTAL_MOVE_FORCE, VERTICAL_MOVE_FORCE);//..
                                     // reflects the strength of the mover's legs
     this.isGrounded = false; // true if is on ground, false otherwise
@@ -18,14 +16,8 @@ class Mover { // base class of a Mover object (player or NPC)
     this.keyCheck();
 
     this.gravity();
-    this.move();
-    this.jump();
-
-    if (!this.isGrounded) { // constrain the mover's ability to steer in air
-      this.acc.x = constrain(this.acc.x,
-                            -MAX_AIR_HORIZONTAL_ACC, MAX_AIR_HORIZONTAL_ACC);
-      this.acc.x *= 0.1;
-    }
+    this.moveX();
+    this.moveY();
 
     this.acc.mult(dt); // multiply by delta time
     this.vel.add(this.acc); // change velocity
@@ -63,13 +55,12 @@ class Mover { // base class of a Mover object (player or NPC)
 
   jump() { // add vertical moveForce
     if (this.input.up) { // if the mover wants to jump
-      if (this.isGrounded) { // if the mover is on ground
+      if (this.isGrounded) {
         this.applyForce(createVector(0,-this.moveForce.y));
         this.isGrounded = false;
       }
-      // else if (this.vel.y > -6) {
-      //   this.vel.y -= 0.2;
-      // }
+    } else if (this.vel.y < 0) {
+      this.vel.y *= 0.9;
     }
   }
 
@@ -77,21 +68,32 @@ class Mover { // base class of a Mover object (player or NPC)
     this.applyForce(createVector(0,GRAVITY));
   }
 
-  move() { // apply horizontal moveForce
-    const LIMIT = this.isGrounded ? 1 : AIR_HORIZONTAL_MOVE_FORCE;
-    if (this.input.right) {
-      this.applyForce(createVector(LIMIT*this.moveForce.x, 0));
-    }
+  moveX() { // apply horizontal moveForce
+    let mult = 0;
     if (this.input.left) {
-      this.applyForce(createVector(-LIMIT*this.moveForce.x, 0));
+      mult--;
+    }
+    if (this.input.right) {
+      mult++;
+    }
+    if (!this.isGrounded) {
+      mult *= AIR_HORIZONTAL_MOVE_MULT;
+    }
+
+    this.applyForce(createVector(mult*this.moveForce.x, 0));
+  }
+
+  moveY() {
+    this.jump();
+    if (!this.isGrounded) {
+      this.gravity();
     }
   }
 
   render() { // draw on the screen
     fill(255); // set the color of the mover to white
     noStroke(); // do not draw borders
-    rectMode(RADIUS); // x and y coordinates are in the center of the rectangle
-    rect(this.pos.x, this.pos.y, this.r, this.r); // r is width/2
+    rect(this.pos.x, this.pos.y, this.wid, this.hei);
   }
 }
 

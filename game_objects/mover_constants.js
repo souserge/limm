@@ -1,11 +1,9 @@
 // changing these constants will affect the behaviour of movers
-const GRAVITY                   =   0.4,
-      WALL_FRICTION             =   0.7,
-
-      HORIZONTAL_MOVE_FORCE     =   1.2,
-      VERTICAL_MOVE_FORCE       =   10,
-      MAX_VERTICAL_SPEED        =   20,
-      MAX_HORIZONTAL_SPEED      =   15,
-
-      AIR_HORIZONTAL_MOVE_FORCE =   0.8,
-      MAX_AIR_HORIZONTAL_ACC    =   1;
+const GRAVITY                   =   0.03,
+      WALL_FRICTION             =   0.5,
+      HORIZONTAL_MOVE_FORCE     =   0.4,
+      HORIZONTAL_STOP_MULT      =   10,
+      VERTICAL_MOVE_FORCE       =   7,
+      MAX_VERTICAL_SPEED        =   19,
+      MAX_HORIZONTAL_SPEED      =   8,
+      AIR_HORIZONTAL_MOVE_MULT  =   0.1;

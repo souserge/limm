@@ -13,4 +13,17 @@ class TimeManager { // manager for delta time and fps
     this.lastFrameTime = TIMESTAMP;
   }
 
+  updateFixed(callback) {
+    this.updateDelta();
+    let preventer = 0;
+    while (this.dt >= TIMESTEP) {
+      callback(TIMESTEP);
+      this.dt -= TIMESTEP;
+      if (++preventer > 100) {
+        this.dt = 0;
+        break;
+      }
+    }
+  }
+
 }

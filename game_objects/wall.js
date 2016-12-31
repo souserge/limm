@@ -1,9 +1,6 @@
-class Wall { // base class for walls (static objects)
-  constructor(x, y, w, h) {
-    this.pos = createVector(x,y);
-    this.wid = w;
-    this.hei = h;
-    //this.isPassable = false; // not used for now
+class Wall extends Entity { // base class for walls (static objects)
+  constructor(x, y, wid, hei) {
+    super(x, y, wid, hei, true);
   }
 
   render() {
