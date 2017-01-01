@@ -23,4 +23,3 @@
      - [ ] make the constants variable (different movers will have different speed etc.)
      - [ ] test
   - [ ] IF succeeded, merge with master
----
