@@ -8,4 +8,4 @@ const GRAVITY           =   0.2,
       X_MOVE_SP      =   3,
       X_MAX_SP       =   8,
       X_STOP_SP      =   10,
-      X_AIR_MOVE_SP  =   0.1;
+      X_AIR_MOVE_SP  =   0.2;
