@@ -30,14 +30,9 @@ class Mover extends Entity {
 
   applyFriction() { // constrain velocity and add dampening
     if (!this.isGrounded) {
-      this.velY = constrain(this.velY,
-                            -Y_MAX_SP, Y_MAX_SP);
+      this.velY = constrain(this.velY, -Y_MAX_SP, Y_MAX_SP);
     }
-    else {
-      this.velX *= WALL_FRICTION;
-    }
-    this.velX = constrain(this.velX,
-                          -X_MAX_SP, X_MAX_SP);
+    this.velX = constrain(this.velX, -X_MAX_SP, X_MAX_SP);
   }
 
   jump() {
@@ -63,9 +58,13 @@ class Mover extends Entity {
     if (this.input.right) {
       mult++;
     }
+
     if (!this.isGrounded) {
       mult *= X_AIR_MOVE_SP;
+    } else if (mult == 0) {
+       this.velX *= WALL_FRICTION;
     }
+
     this.velX += mult*X_MOVE_SP;
   }
 
