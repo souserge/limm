@@ -13,7 +13,7 @@ function setup() {
 }
 
 function restartSketch() {
-  gameSystem = new GameSystem(new Mover(width/2, height-100, TSIZE, TSIZE));
+  gameSystem = new GameSystem(new Player(width/2, height-100, TSIZE, TSIZE));
   gameSystem.changeTileMap(TEST_LEVEL);
 }
 
@@ -27,9 +27,7 @@ function draw() {
 
 function displayMessage() {
   fill(150, 75, 150);
-  textSize(64);
+  textSize(48);
   textAlign(CENTER);
-  text('Welcome to limm', width/2, height/2-100);
-  textSize(32);
-  text('change_tile branch', width/2, height/2-50);
+  text('Welcome to limm', width/2, TSIZE*4);
 }

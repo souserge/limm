@@ -1,11 +1,16 @@
 class TileMap {
-  constructor(map) {
+  constructor(map, wid, hei, xoff, yoff, isVisible) {
     this.data = map;
     this.tsize = TSIZE;
     this.size = {
-        x: COLS,
-        y: ROWS
+      x: wid || COLS,
+      y: hei || ROWS
     }
+    this.offset = {
+      x: xoff || 0,
+      y: yoff || 0
+    }
+    this.isVisible = isVisible || true;
   }
 
   renderMap() {
@@ -13,7 +18,7 @@ class TileMap {
       for (let j = 0; j < this.size.x; j++) {
         let idx = this.size.x*i+j;
         if (this.data[idx] != 0) {
-          this.renderTile(this.data[idx], j, i);
+          this.renderTile(this.data[idx], j + this.offset.x, i + this.offset.y);
         }
       }
     }
@@ -22,10 +27,11 @@ class TileMap {
   collision(x, y, w, h) {
     x = floor(x);
     y = floor(y);
-    let leftTile = floor(x/this.tsize);
-    let rightTile = floor((x+w)/this.tsize);
-    let topTile = floor(y/this.tsize);
-    let bottomTile = floor((y+h)/this.tsize);
+
+    let leftTile = floor(x/this.tsize) - this.offset.x;
+    let rightTile = floor((x+w)/this.tsize) - this.offset.x;
+    let topTile = floor(y/this.tsize) - this.offset.y;
+    let bottomTile = floor((y+h)/this.tsize) - this.offset.y;
 
     for (let i = topTile; i <= bottomTile; i++) {
       for (let j = leftTile; j <= rightTile; j++) {
@@ -39,6 +45,8 @@ class TileMap {
   }
 
   renderTile(tileID, x, y) {
+      if (!this.isVisible) return;
+
       let px = x*this.tsize;
       let py = y*this.tsize;
       

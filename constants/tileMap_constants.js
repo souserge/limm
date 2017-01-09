@@ -11,4 +11,5 @@ const
       TILE_VACU = 4,
       TILE_BALL = 5,
       TILE_WATE = 6,
-      TILE_CUCU = 7;
+      TILE_CUCU = 7,
+      TILE_WARP = 8;

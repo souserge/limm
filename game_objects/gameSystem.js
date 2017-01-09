@@ -1,7 +1,7 @@
 class GameSystem { // a class for handling interactions between objects
   constructor(player) {
     this.tileMap = null;
-    this.player = player || new Mover(width/2, height/2, 10, 10); // if passed..
+    this.player = player || new Player(width/2, height/2, 10, 10); // if passed..
           // as an argument, assign a player, create a new Mover otherwise
     this.timeManager = new TimeManager();
     this.tileMapRequested = -1;
@@ -12,9 +12,10 @@ class GameSystem { // a class for handling interactions between objects
   }
 
   updateGame(dt) { // update player and check for collisions
-    this.player.updateVel(dt);
+    this.player.keyCheck();
+    this.player.updateVel();
     this.checkCollision(this.player);
-    this.player.updatePos();
+    this.player.updatePos(dt);
   }
 
   update() {
@@ -22,17 +23,18 @@ class GameSystem { // a class for handling interactions between objects
       this.tileMap = getTileMap(this.tileMapRequested);
       this.tileMapRequested = -1;
     }
-    this.updateGame(this.timeManager.timestep);
-    // this.timeManager.updateDelta();
-    // let preventer = 0;
-    // while (this.timeManager.dt >= this.timeManager.timestep) {
-    //   this.updateGame(this.timeManager.timestep)
-    //   this.timeManager.dt -= this.timeManager.timestep;
-    //   if (++preventer > 100) {
-    //     this.timeManager.dt = 0;
-    //     break;
-    //   }
-    // }
+
+
+    this.timeManager.updateDelta();
+    let preventer = 0;
+    while (this.timeManager.dt >= this.timeManager.timestep) {
+      this.updateGame(this.timeManager.timestep);
+      this.timeManager.dt -= this.timeManager.timestep;
+      if (++preventer > 100) {
+        this.timeManager.dt = 0;
+        break;
+      }
+    }
   }
 
   checkCollision(mover) { // check for collisions between walls and player
@@ -45,6 +47,7 @@ class GameSystem { // a class for handling interactions between objects
     if (this.tileMap.collision(mover.posX + mover.velX, mover.posY, mover.wid, mover.hei)) {
       let preventer = 0;
       let xamt = Math.sign(mover.velX);
+      console.log(mover.velX);
       if (xamt === 0) {
         console.log("X ZERO!!");
       }
