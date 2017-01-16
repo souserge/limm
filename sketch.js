@@ -11,6 +11,7 @@ function setup() {
   cnv = createCanvas(WID, HEI);
   centerCanvas();
   restartSketch();
+  console.log(width, height);
   textFont("Courier New");
 }
 
@@ -26,20 +27,9 @@ function windowResized() {
 
 function restartSketch() {
   gameSystem = new GameSystem(new Player(width/2, height-100, TSIZE, TSIZE));
-  gameSystem.changeTileMap(TEST_LEVEL);
+  gameSystem.changeLevel('TEST');
 }
 
 function draw() {
-  background(100, 50, 100);
-  displayMessage();
-  
-  gameSystem.update();
-  gameSystem.render();
-}
-
-function displayMessage() {
-  fill(150, 75, 150);
-  textSize(48);
-  textAlign(CENTER);
-  text('Welcome to limm', width/2, TSIZE*4);
+  gameSystem.animateFrame();
 }

@@ -7,28 +7,11 @@ class Player extends Mover {
       maxVelY: Y_MAX_SP
     }
     super(x, y, wid, hei, params);
-    this.input = {up: false, down: false, right: false, left: false}
   }
 
-  updateVel() {
-    super.updateVel();
-  }
-
-  updatePos(dt) {
-    super.updatePos(dt);
-  }
-
-  constrainVel() {
-    super.constrainVel();
-  }
-
-  gravity() {
-    super.gravity();
-  }
-
-  jump() {
-    if (this.input.up) {
-      if (this.isGrounded) {
+  jump(input) {
+    if (input.jump.down) {
+      if (this.isGrounded && input.jump.pressed) {
         this.velY -= Y_MOVE_SP;
         this.isGrounded = false;
       }
@@ -37,13 +20,13 @@ class Player extends Mover {
     }
   }
 
-  moveX() {
+  moveX(input) {
     let mult = 0;
-    if (this.input.left) {
+    if (input.left.down) {
       this.heading = -1;
       mult--;
     }
-    if (this.input.right) {
+    if (input.right.down) {
       this.heading = 1;
       mult++;
     }
@@ -57,21 +40,22 @@ class Player extends Mover {
     this.velX += mult*X_MOVE_SP;
   }
 
-  moveY() {
-    this.jump();
+  moveY(input) {
+    this.jump(input);
     this.gravity();
   }
 
-  keyCheck() {
-    this.input.left = keyIsDown(LEFT_ARROW);
-    this.input.right = keyIsDown(RIGHT_ARROW);
-    this.input.up = keyIsDown(UP_ARROW);
-  }
-
-  render() {
-    fill(255);
+  render(lag) {
+    let rposX = this.posX + this.velX*lag;
+    let rposY = this.posY + this.velY*lag;
+    fill(250,200,150);
     noStroke();
-    rect(this.posX, this.posY, this.wid, this.hei);
+    rect(rposX, rposY, this.wid, this.hei);
+    triangle(rposX, rposY, rposX + this.wid/8, rposY - this.hei/2, rposX + this.wid/3, rposY+1);
+    triangle(rposX + 2*this.wid/3, rposY+1, rposX + 7*this.wid/8, rposY - this.hei/2, rposX + this.wid, rposY);
+    fill(50,150,50);
+    rect(rposX + this.wid/6, rposY + 2*this.hei/6, this.wid/6, this.hei/6);
+    rect(rposX + 4*this.wid/6, rposY + 2*this.hei/6, this.wid/6, this.hei/6);
   }
 
 }
