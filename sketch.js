@@ -9,9 +9,10 @@ function preload() { // will need it for loading textures, sounds and other file
 
 function setup() {
   cnv = createCanvas(WID, HEI);
+  frameRate(MAX_FPS);
   centerCanvas();
   restartSketch();
-  console.log(width, height);
+  console.log("limm test");
   textFont("Courier New");
 }
 

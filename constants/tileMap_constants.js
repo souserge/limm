@@ -4,7 +4,7 @@ const
       ROWS = 30,
       WID = COLS*TSIZE,
       HEI = ROWS*TSIZE,
-      
+
 
       TILES = {
         WALL: 1,
@@ -14,10 +14,10 @@ const
         BALLOON: 5,
         WATER: 6,
         CUCUMBER: 7,
-        DOOR: -1
+        DOOR: -1,
+        VANTUS: -2
       }
 
       EVENTS = {
         TELEPORT: 1
       }
-

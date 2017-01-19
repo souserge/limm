@@ -1,4 +1,4 @@
-class Mover extends Entity {
+;class Mover extends Entity {
   constructor(x, y, wid, hei, params) {
     super(x, y, wid, hei, true);
     this.prevPosX = this.posX;
@@ -25,12 +25,12 @@ class Mover extends Entity {
 
   updatePos(dt, tilemap) {
 
-    this.isGrounded = tilemap.collisionBottom(this.posX, this.posY + 1, this.wid, this.hei);
-    console.log(this.isGrounded);
+    this.isGrounded = tilemap.collision(this.posX, this.posY + this.hei, this.wid, 1);
     if (tilemap.collision(this.posX + this.velX, this.posY, this.wid, this.hei)) {
       let preventer = 0;
-      while (!tilemap.collision(this.posX + this.moveDirX, this.posY, this.wid, this.hei)) {
-        this.posX += this.moveDirX;
+      let xamt = Math.sign(this.velX);
+      while (!tilemap.collision(this.posX + xamt, this.posY, this.wid, this.hei)) {
+        this.posX += xamt;
         if (preventer++ > this.params.maxVelX) break;
       }
       this.velX = 0;
@@ -40,8 +40,9 @@ class Mover extends Entity {
 
     if (tilemap.collision(this.posX, this.posY + this.velY, this.wid, this.hei)) {
       let preventer = 0;
-      while (!tilemap.collision(this.posX, this.posY + this.moveDirY, this.wid, this.hei)) {
-        this.posY += this.moveDirY;
+      let yamt = Math.sign(this.velY);
+      while (!tilemap.collision(this.posX, this.posY + yamt, this.wid, this.hei)) {
+        this.posY += yamt;
         if (preventer++ > this.params.maxVelY) break;
       }
       this.velY = 0;

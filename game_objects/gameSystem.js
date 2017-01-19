@@ -1,10 +1,22 @@
 class GameSystem { // a class for handling interactions between objects
   constructor(player) {
     this.level = null;
-    this.player = player || new Player(width/2, height/2, 10, 10); // if passed..
+    this.player = player || new Player(width/2, height/2, 100, 100); // if passed..
           // as an argument, assign a player, create a new Mover otherwise
     this.timeManager = new TimeManager();
-    this.levelRequested = null;
+    this.flags = {
+      level: {
+        requested: null,
+        loaded: false
+      },
+      game: {
+        over: false
+
+      }
+    }
+
+    this.movers = [];
+
     this.input = {
       jump: {
         down: false,
@@ -26,7 +38,7 @@ class GameSystem { // a class for handling interactions between objects
   }
 
   changeLevel(levelID) {
-    this.levelRequested = levelID;
+    this.flags.level.requested = levelID;
   }
 
   checkOneKey(keycode, key) {
@@ -44,26 +56,35 @@ class GameSystem { // a class for handling interactions between objects
   }
 
   update(dt) { // update player and check for collisions
-    this.player.updateVel(this.input);
     this.checkEvents(this.player);
+    this.level.tilelayer.checkActiveCollision(this.player);
+
+    if (this.player.killed) {
+      this.flags.game.over = true;
+      return;
+    }
+    this.player.updateVel(this.input);
     this.player.updatePos(dt, this.level.tilelayer);
   }
 
   loadLevel() {
-    if (this.levelRequested !== null) {
-      this.level = gameWorlds[currWorld].getLevel(this.levelRequested);
-      this.levelRequested = null;
+    if (this.flags.level.requested !== null) {
+      this.flags.level.loaded = false;
+      this.level = gameWorlds[currWorld].getLevel(this.flags.level.requested); // rewrite!!
+      this.flags.level.loaded = true;
+      this.flags.level.requested = null;
     }
   }
 
   animateFrame() {
     this.loadLevel();
-    
-    this.keyCheck();
+
+    if (!this.flags.level.loaded) return;
 
     this.timeManager.updateDelta();
     let preventer = 0;
     while (this.timeManager.dt >= this.timeManager.timestep) {
+      this.keyCheck();
       this.update();
       this.timeManager.dt -= this.timeManager.timestep;
       if (++preventer > 100) {
@@ -82,24 +103,23 @@ class GameSystem { // a class for handling interactions between objects
           if (res.level !== null) {
             this.changeLevel(res.level);
           }
-          mover.posX = res.x*res.tilesize;
-          mover.posY = res.y*res.tilesize - 0.01;
+          mover.posX = (res.x+this.level.offset.x)*res.tilesize;
+          mover.posY = (res.y+this.level.offset.y)*res.tilesize - 0.01;
           mover.velX = 0;
           mover.velY = 0;
-          mover.moveDirY = 1;
-          mover.moveDirX = 1;
           break;
       }
     }
   }
 
-  // handleCollision(mover) {
-  //   mover.isGrounded = this.level.tilelayer.collisionBottom(mover.posX, mover.posY + 2, mover.wid, mover.hei); 
-  //   if (this.level.tilelayer.collision(mover.posX + mover.velX, mover.posY, mover.wid, mover.hei)) mover.velX = 0;
-  //   if (this.level.tilelayer.collision(mover.posX, mover.posY + mover.velY, mover.wid, mover.hei)) mover.velY = 0;
-  // }
-
   render(lag) {
+    if (this.flags.game.over) {
+      textAlign(CENTER);
+      textSize(48);
+      fill(255);
+      text("Game Over", width/2, height/2);
+      return;
+    }
     this.level.render();
     this.player.render(lag);
   }

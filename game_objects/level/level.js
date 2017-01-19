@@ -1,0 +1,30 @@
+class Level {
+    constructor(levelId, tilelayerData, eventlayerData, entitylayerData, tilesize, wid, hei, xoff, yoff, cr, cg, cb) {
+        this.id = levelId || "noid";
+        this.tilesize = tilesize || 16;
+
+        this.size = {
+            x: wid || 32,
+            y: hei || 32
+        }
+        this.offset = {
+            x: xoff || 0,
+            y: yoff || 0
+        }
+
+        this.color = {
+            r: cr || 200,
+            g: cg || 50,
+            b: cb || 100
+        }
+
+        this.tilelayer = new Tilelayer(tilelayerData, this.tilesize, this.size, this.offset, this.color);
+        this.eventlayer = new Eventlayer(eventlayerData, this.tilesize, this.size, this.offset);
+        this.entitylayer = new Entitylayer(entitylayerData, this.tilesize, this.size, this.offset);
+    }
+
+    render() {
+        background(this.color.r*0.5, this.color.g*0.5, this.color.b*0.5);
+        this.tilelayer.renderMap();
+    }
+}

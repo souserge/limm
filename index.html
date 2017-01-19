@@ -16,24 +16,30 @@
   <script language="javascript" src="lib/min/p5.sound.min.js"></script>
 
   <!-- helper and additional functionality -->
-  <script language="javascript" src="globals/timeManager.js"></script>
+  <script language="javascript" src="managers/timeManager.js"></script>
+  <script language="javascript" src="managers/assetLoader.js"></script>
+  <script language="javascript" src="managers/levelLoader.js"></script>
+  <script language="javascript" src="managers/xhr.js"></script>
 
   <!-- constants -->
   <script language="javascript" src="constants/mover_constants.js"></script>
   <script language="javascript" src="constants/tileMap_constants.js"></script>
 
   <!-- game objects -->
-  <script language="javascript" src="game_objects/entity.js"></script>
-  <script language="javascript" src="game_objects/tileMap.js"></script>
-  <script language="javascript" src="game_objects/world.js"></script>
-  <script language="javascript" src="game_objects/tilelayer.js"></script>
-  <script language="javascript" src="game_objects/eventlayer.js"></script> 
-  <script language="javascript" src="game_objects/level.js"></script> 
-  <script language="javascript" src="game_objects/mover.js"></script>
-  <script language="javascript" src="game_objects/player.js"></script>
+  <script language="javascript" src="game_objects/entities/entity.js"></script>
+  <script language="javascript" src="game_objects/entities/mover.js"></script>
+  <script language="javascript" src="game_objects/entities/player.js"></script>
+  
+  <script language="javascript" src="game_objects/level/tileMap.js"></script>
+  <script language="javascript" src="game_objects/level/world.js"></script>
+  <script language="javascript" src="game_objects/level/tilelayer.js"></script>
+  <script language="javascript" src="game_objects/level/eventlayer.js"></script> 
+  <script language="javascript" src="game_objects/level/entitylayer.js"></script> 
+  <script language="javascript" src="game_objects/level/level.js"></script> 
+  
   <script language="javascript" src="game_objects/gameSystem.js"></script>
 
-  <script language="javascript" src="globals/global_functions.js"></script>
+  
   <script language="javascript" src="globals/global_data.js"></script>
 
   <script language="javascript" type="text/javascript" src="sketch.js"></script>

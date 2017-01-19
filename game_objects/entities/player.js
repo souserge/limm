@@ -48,14 +48,10 @@ class Player extends Mover {
   render(lag) {
     let rposX = this.posX + this.velX*lag;
     let rposY = this.posY + this.velY*lag;
-    fill(250,200,150);
-    noStroke();
-    rect(rposX, rposY, this.wid, this.hei);
-    triangle(rposX, rposY, rposX + this.wid/8, rposY - this.hei/2, rposX + this.wid/3, rposY+1);
-    triangle(rposX + 2*this.wid/3, rposY+1, rposX + 7*this.wid/8, rposY - this.hei/2, rposX + this.wid, rposY);
-    fill(50,150,50);
-    rect(rposX + this.wid/6, rposY + 2*this.hei/6, this.wid/6, this.hei/6);
-    rect(rposX + 4*this.wid/6, rposY + 2*this.hei/6, this.wid/6, this.hei/6);
+
+    gAssetLoader.load(['/assets/player.png'], (img) => {
+      image(img, rposX-2, rposY-4);
+    });
   }
 
 }
