@@ -8,8 +8,8 @@ let assetList = [
 ];
 
 function preload() { // will need it for loading textures, sounds and other files
-  gAssetLoader(assetList, (asset) => {
-    
+  gAssetLoader.load(assetList, (asset) => {
+
   });
 }
 
