@@ -1,5 +1,6 @@
 let cnv;
 let gGameSystem;
+let gPreloadDone = false;
 let assetList = [
   "./assets/sfx/player_jump.wav",
   './assets/sprites/player.png',
@@ -8,12 +9,13 @@ let assetList = [
 ];
 
 function preload() { // will need it for loading textures, sounds and other files
-  gAssetLoader.load(assetList, (asset) => {
-
-  });
 }
 
 function setup() {
+  gAssetLoader.load(assetList, (asset) => {
+    console.log("loaded");
+    gPreloadDone = true;
+  });
   cnv = createCanvas(WID, HEI);
   frameRate(MAX_FPS);
   centerCanvas();
@@ -44,5 +46,5 @@ function restartSketch() {
 }
 
 function draw() {
-  gGameSystem.animateFrame();
+  if (gPreloadDone) gGameSystem.animateFrame();
 }
