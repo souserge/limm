@@ -1,3 +1,8 @@
+const ASSET_TYPE = {
+  IMG: 0,
+  JS: 1,
+  SND: 2
+};
 class AssetLoader {
   constructor() {
     this.cached = new Map();
@@ -10,14 +15,19 @@ class AssetLoader {
       cb: callbackFcn
     };
     for (var i = 0; i < assetList.length; i++) {
-      if (!this.cached.has(assetList[i])) {
-        let assetType = this.getAssetTypeFromExtension(assetList[i]);
-        if (assetType === 0) { // Asset is an image
-          let img = loadImage(assetList[i], (img) => {
+      let filename = assetList[i];
+
+      if (!this.cached.has(filename)) {
+
+        let assetType = this.getAssetTypeFromExtension(filename);
+
+        if (assetType === ASSET_TYPE.IMG) { // Asset is an image
+          let img = loadImage(filename, (img) => {
             this.onLoadedCallback(img, loadBatch);
           });
-          this.cached.set(assetList[i], img);
-        } else if (assetType === 1) { // Asset is Javascript
+          this.cached.set(filename, img);
+        }
+        else if (assetType === ASSET_TYPE.JS) { // Asset is Javascript
           var fileref = document.createElement('script');
           fileref.setAttribute("type", "text/javascript");
           fileref.onload = function (e){
@@ -25,10 +35,17 @@ class AssetLoader {
           };
           fileref.setAttribute("src", filename);
           document.getElementsByTagName("head")[0].appendChild(fileref);
-          this.cached.set(assetList[i], fileref);
+          this.cached.set(filename, fileref);
         }
-      } else { // Asset is already loaded
-        this.onLoadedCallback(this.cached.get(assetList[i]), loadBatch);
+        else if (assetType === ASSET_TYPE.SND) {
+          let snd = loadSound(filename, (snd) => {
+            this.onLoadedCallback(snd, loadBatch);
+          });
+          this.cached.set(filename, snd);
+        }
+      }
+      else { // Asset is already loaded
+        this.onLoadedCallback(this.cached.get(filename), loadBatch);
       }
     }
   }
@@ -52,6 +69,11 @@ class AssetLoader {
         fname.indexOf('.json') != -1) {
   		return 1;
   	}
+    if (fname.indexOf('.wav') != -1 ||
+        fname.indexOf('.mp3') != -1 ||
+        fname.indexOf('.ogg') != -1) {
+      return 2;
+    }
   	return -1;
   }
 }

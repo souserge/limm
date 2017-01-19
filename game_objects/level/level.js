@@ -23,6 +23,23 @@ class Level {
         this.entitylayer = new Entitylayer(entitylayerData, this.tilesize, this.size, this.offset);
     }
 
+    checkActiveCollision(mover) {
+      let tiles = this.tilelayer.onTiles(mover.posX, mover.posY, mover.wid, mover.hei);
+
+      for (let tile of tiles) {
+        if (this.tilelayer.data[tile] === TILES.VANTUS) {
+          mover.killed = true;
+        }
+      }
+    }
+
+    wallCollision(x, y, w, h) {
+      if (arguments.length == 2) {
+        return this.tilelayer.pointCollision(x,y);
+      }
+      return this.tilelayer.collision(x, y, w, h);
+    }
+
     render() {
         background(this.color.r*0.5, this.color.g*0.5, this.color.b*0.5);
         this.tilelayer.renderMap();

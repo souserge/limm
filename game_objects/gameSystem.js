@@ -1,13 +1,13 @@
 class GameSystem { // a class for handling interactions between objects
-  constructor(player) {
+  constructor() {
     this.level = null;
-    this.player = player || new Player(width/2, height/2, 100, 100); // if passed..
-          // as an argument, assign a player, create a new Mover otherwise
+    this.player = new Player(0,0);
     this.timeManager = new TimeManager();
     this.flags = {
       level: {
         requested: null,
-        loaded: false
+        loaded: false,
+        callback: null
       },
       game: {
         over: false
@@ -37,34 +37,74 @@ class GameSystem { // a class for handling interactions between objects
     }
   }
 
-  changeLevel(levelID) {
-    this.flags.level.requested = levelID;
+  teleportEntity(ent, x, y) {
+    ent.posX = x;
+    ent.posY = y;
+    ent.velX = 0;
+    ent.velY = 0;
+    ent.isGrounded = false;
   }
 
-  checkOneKey(keycode, key) {
-    if (keyIsDown(keycode)) {
-      key.pressed = !key.down;
-      key.down = true;
-    } else key.pressed = key.down = false;
+  teleportPlayer(x,y) {
+    this.teleportEntity(this.player, x, y);
+  }
+
+  spawnMover(ent) {
+    this.movers.push(ent);
+  }
+
+  changeLevel(levelID, callback) {
+    this.flags.level.requested = levelID;
+    this.flags.level.callback = callback;
+  }
+
+  checkInput(keycodes, key) {
+    for (let keycode of keycodes) {
+      if (keyIsDown(keycode)) {
+        key.pressed = !key.down;
+        key.down = true;
+        return;
+      }
+    }
+    key.pressed = key.down = false;
   }
 
   keyCheck() {
-    this.checkOneKey(UP_ARROW, this.input.jump);
-    this.checkOneKey(RIGHT_ARROW, this.input.right);
-    this.checkOneKey(LEFT_ARROW, this.input.left);
-    this.checkOneKey(90, this.input.action);
+    this.checkInput([UP_ARROW,
+                    87, // 'W'
+                    90, // 'Z'
+                    32],// ' '
+                    this.input.jump);
+
+    this.checkInput([RIGHT_ARROW,
+                    68], // 'A'
+                    this.input.right);
+
+    this.checkInput([LEFT_ARROW,
+                    65], // 'D'
+                    this.input.left);
+
+    this.checkInput([DOWN_ARROW,
+                    83, // 'S'
+                    88, // 'X'
+                    69],// 'E'
+                    this.input.action);
   }
 
   update(dt) { // update player and check for collisions
     this.checkEvents(this.player);
-    this.level.tilelayer.checkActiveCollision(this.player);
+    this.level.checkActiveCollision(this.player);
 
     if (this.player.killed) {
       this.flags.game.over = true;
       return;
     }
-    this.player.updateVel(this.input);
-    this.player.updatePos(dt, this.level.tilelayer);
+    for (let mover of this.movers) {
+      if(!mover.killed) {
+        mover.update(dt);
+      }
+    }
+    this.player.update(dt);
   }
 
   loadLevel() {
@@ -73,6 +113,10 @@ class GameSystem { // a class for handling interactions between objects
       this.level = gameWorlds[currWorld].getLevel(this.flags.level.requested); // rewrite!!
       this.flags.level.loaded = true;
       this.flags.level.requested = null;
+      this.movers = [];
+
+      if (this.flags.level.callback) this.flags.level.callback();
+      this.flags.level.callback = null;
     }
   }
 
@@ -103,10 +147,7 @@ class GameSystem { // a class for handling interactions between objects
           if (res.level !== null) {
             this.changeLevel(res.level);
           }
-          mover.posX = (res.x+this.level.offset.x)*res.tilesize;
-          mover.posY = (res.y+this.level.offset.y)*res.tilesize - 0.01;
-          mover.velX = 0;
-          mover.velY = 0;
+          this.teleportEntity(this.player, (res.x+this.level.offset.x)*res.tilesize, (res.y+this.level.offset.y)*res.tilesize - 0.01);
           break;
       }
     }
@@ -121,6 +162,13 @@ class GameSystem { // a class for handling interactions between objects
       return;
     }
     this.level.render();
+
+    for (let mover of this.movers) {
+      if(!mover.killed) {
+        mover.render(lag);
+      }
+    }
+
     this.player.render(lag);
   }
 }

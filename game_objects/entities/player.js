@@ -1,32 +1,41 @@
+const PLAYER = {
+  WID: 16,
+  HEI: 16
+}
+
 class Player extends Mover {
-  constructor(x, y, wid, hei) {
+  constructor(x, y) {
     let params = {
       jump: Y_MOVE_SP,
       gravity: GRAVITY,
       maxVelX: X_MAX_SP,
       maxVelY: Y_MAX_SP
     }
-    super(x, y, wid, hei, params);
+    super(x, y, PLAYER.WID, PLAYER.HEI, params);
   }
 
-  jump(input) {
-    if (input.jump.down) {
-      if (this.isGrounded && input.jump.pressed) {
+  jump() {
+    if (gGameSystem.input.jump.down) {
+      if (this.isGrounded && gGameSystem.input.jump.pressed) {
         this.velY -= Y_MOVE_SP;
         this.isGrounded = false;
+        gAssetLoader.load(["./assets/sfx/player_jump.wav"], (snd) => {
+          snd.playMode('restart');
+          snd.play();
+        });
       }
     } else if (this.velY < 0) {
       this.velY *= 0.9;
     }
   }
 
-  moveX(input) {
+  moveX() {
     let mult = 0;
-    if (input.left.down) {
+    if (gGameSystem.input.left.down) {
       this.heading = -1;
       mult--;
     }
-    if (input.right.down) {
+    if (gGameSystem.input.right.down) {
       this.heading = 1;
       mult++;
     }
@@ -40,8 +49,8 @@ class Player extends Mover {
     this.velX += mult*X_MOVE_SP;
   }
 
-  moveY(input) {
-    this.jump(input);
+  moveY() {
+    this.jump();
     this.gravity();
   }
 
@@ -49,7 +58,7 @@ class Player extends Mover {
     let rposX = this.posX + this.velX*lag;
     let rposY = this.posY + this.velY*lag;
 
-    gAssetLoader.load(['/assets/player.png'], (img) => {
+    gAssetLoader.load(['./assets/sprites/player.png'], (img) => {
       image(img, rposX-2, rposY-4);
     });
   }

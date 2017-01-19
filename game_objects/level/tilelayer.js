@@ -12,16 +12,6 @@ class Tilelayer extends TileMap {
       }
   }
 
-  checkActiveCollision(mover) {
-    let tiles = super.onTiles(mover.posX, mover.posY, mover.wid, mover.hei);
-
-    for (let tile of tiles) {
-      if (this.data[tile] === TILES.VANTUS) {
-        mover.killed = true;
-      }
-    }
-  }
-
   renderMap() {
     for (let i = 0; i < this.size.y; i++) {
       for (let j = 0; j < this.size.x; j++) {
@@ -74,7 +64,7 @@ class Tilelayer extends TileMap {
     //   image(this.images.vantus,px, py-4);
     // }
 
-    gAssetLoader.load(['/assets/vantus.png'], (img) => {
+    gAssetLoader.load(['./assets/sprites/vantus.png'], (img) => {
       image(img, px, py-4);
     });
   }
