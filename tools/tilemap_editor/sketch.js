@@ -9,6 +9,8 @@ function setup() {
   ui.div.show();
   textFont("Courier New");
   console.log("tilemap editor - beta");
+  console.log(window.location.hostname);
+  console.log(window.location.href);
   loop();
 }
 

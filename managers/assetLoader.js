@@ -6,6 +6,7 @@ const ASSET_TYPE = {
 class AssetLoader {
   constructor() {
     this.cached = new Map();
+    console.log(window.location.href);
   }
 
   load(assetList, callbackFcn) {
@@ -77,5 +78,7 @@ class AssetLoader {
   	return -1;
   }
 }
+
+
 
 let gAssetLoader = new AssetLoader();

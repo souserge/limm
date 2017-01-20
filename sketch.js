@@ -16,7 +16,7 @@ function setup() {
   cnv = createCanvas(WID, HEI);
   frameRate(MAX_FPS);
   centerCanvas();
-
+  console.log(window.location.href);
   gAssetLoader.load(assetList, (asset) => {
     console.log("loaded");
     gPreloadDone = true;
