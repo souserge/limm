@@ -1,3 +1,7 @@
+const GAME_SYSTEM = {
+  HALT_TIME: 5
+}
+
 class GameSystem { // a class for handling interactions between objects
   constructor() {
     this.level = null;
@@ -10,8 +14,8 @@ class GameSystem { // a class for handling interactions between objects
         callback: null
       },
       game: {
-        over: false
-
+        over: false,
+        halt: GAME_SYSTEM.HALT_TIME
       }
     }
 
@@ -91,12 +95,31 @@ class GameSystem { // a class for handling interactions between objects
                     this.input.action);
   }
 
+  restartGame() {
+    this.flags.game.over = true;
+
+    this.flags.game.halt -= 0.1;
+    if (this.flags.game.halt <= 0 && this.input.action.pressed) {
+      this.flags.game.halt = GAME_SYSTEM.HALT_TIME;
+      this.player.killed = false;
+      this.flags.game.over = false;
+      this.movers = [];
+      //maybe this should be as well
+      //this.level = null;
+
+      this.flags.level.requested = null;
+      this.flags.level.loaded = false;
+      this.flags.level.callback = null;
+      restartSketch();
+    }
+  }
+
   update(dt) { // update player and check for collisions
     this.checkEvents(this.player);
     this.level.checkActiveCollision(this.player);
 
     if (this.player.killed) {
-      this.flags.game.over = true;
+      this.restartGame();
       return;
     }
     for (let mover of this.movers) {
@@ -110,12 +133,14 @@ class GameSystem { // a class for handling interactions between objects
   loadLevel() {
     if (this.flags.level.requested !== null) {
       this.flags.level.loaded = false;
-      this.level = gameWorlds[currWorld].getLevel(this.flags.level.requested); // rewrite!!
+      this.level = gameWorlds[currWorld].getLevel(this.flags.level.requested); //TODO
       this.flags.level.loaded = true;
       this.flags.level.requested = null;
       this.movers = [];
 
-      if (this.flags.level.callback) this.flags.level.callback();
+      if (this.flags.level.callback) {
+        this.flags.level.callback();
+      }
       this.flags.level.callback = null;
     }
   }
@@ -123,7 +148,7 @@ class GameSystem { // a class for handling interactions between objects
   animateFrame() {
     this.loadLevel();
 
-    if (!this.flags.level.loaded) return;
+    if (!this.flags.level.loaded || this.level === null) return;
 
     this.timeManager.updateDelta();
     let preventer = 0;
@@ -159,8 +184,13 @@ class GameSystem { // a class for handling interactions between objects
       textSize(48);
       fill(255);
       text("Game Over", width/2, height/2);
+      if (this.flags.game.halt <= 0) {
+        textSize(24);
+        text("press action to continue", width/2, height/2+48);
+      }
       return;
     }
+
     this.level.render();
 
     for (let mover of this.movers) {

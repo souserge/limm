@@ -52,8 +52,6 @@ class Crabocop extends Mover {
     let rposX = this.posX + this.velX*lag;
     let rposY = this.posY + this.velY*lag;
 
-    gAssetLoader.load(["./assets/sprites/crabocop.png"], (img) => {
-      image(img, rposX-2, rposY-4);
-    });
+    gDrawHelper.crabocop(rposX, rposY);
   }
 }

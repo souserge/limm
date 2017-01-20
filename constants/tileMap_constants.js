@@ -8,16 +8,13 @@ const
 
       TILES = {
         WALL: 1,
-        APPLE: 2,
-        BANANA: 3,
-        VACUUM: 4,
-        BALLOON: 5,
-        WATER: 6,
-        CUCUMBER: 7,
         DOOR: -1,
         VANTUS: -2
       }
 
       EVENTS = {
-        TELEPORT: 1
+        TELEPORT: -1,
+        SPAWN: {
+          CRABOCOP: 1
+        }
       }

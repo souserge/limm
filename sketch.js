@@ -3,6 +3,7 @@ let gGameSystem;
 let gPreloadDone = false;
 let assetList = [
   "./assets/sfx/player_jump.wav",
+  //"./assets/sfx/beastly.mp3",
   './assets/sprites/player.png',
   "./assets/sprites/crabocop.png",
   './assets/sprites/vantus.png'
@@ -12,15 +13,17 @@ function preload() { // will need it for loading textures, sounds and other file
 }
 
 function setup() {
-  gAssetLoader.load(assetList, (asset) => {
-    console.log("loaded");
-    gPreloadDone = true;
-  });
   cnv = createCanvas(WID, HEI);
   frameRate(MAX_FPS);
   centerCanvas();
 
+  gAssetLoader.load(assetList, (asset) => {
+    console.log("loaded");
+    gPreloadDone = true;
+  });
+
   console.log("limm test");
+
   textFont("Courier New");
 
   gGameSystem = new GameSystem();
@@ -38,7 +41,7 @@ function windowResized() {
 }
 
 function restartSketch() {
-  gGameSystem.changeLevel('TEST', function() {
+    gGameSystem.changeLevel('TEST', function() {
     gGameSystem.spawnMover(new Crabocop(TSIZE*10, height-TSIZE*2-2, 1));
     gGameSystem.spawnMover(new Crabocop(width/2, height/2+40, 1));
     gGameSystem.teleportPlayer(width-TSIZE*2-2, height-TSIZE*2-2);
@@ -46,5 +49,18 @@ function restartSketch() {
 }
 
 function draw() {
-  if (gPreloadDone) gGameSystem.animateFrame();
+  if (gPreloadDone) {
+    gGameSystem.animateFrame();
+  } else {
+    drawLoadingScreen();
+  }
+}
+
+
+function drawLoadingScreen() {
+  background(20,0,40);
+  textAlign(CENTER);
+  textSize(32);
+  fill(255);
+  text("Loading...", width/2, height/2);
 }

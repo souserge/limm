@@ -26,13 +26,12 @@ let level = {
     "data": []
   },
 
-  "entitylayer": {
-    "data": []
-  }
+  "entities": []
 };
 
 function createLevel() {
   flags.started = true;
+  flags.editing = true;
   flags.currLayer = "tilelayer";
   flags.currObj = TILES.WALL;
   flags.mode = MODE.DRAW;
@@ -62,10 +61,8 @@ function createLevel() {
     for (let j = 0; j < level.size.x; j++) {
       level.tilelayer.data.push(0);
       level.eventlayer.data.push(0);
-      level.entitylayer.data.push(0);
     }
   }
   ui.div.hide();
   toolbar.div.show();
 }
-
