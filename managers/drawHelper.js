@@ -1,6 +1,14 @@
 class DrawHelper {
+  constructor() {
+    this.prePath = '/';
+  }
+
+  setAppendingPath(path) {
+    this.prePath = path;
+  }
+
   vantus(px, py) {
-    gAssetLoader.load(['/assets/sprites/vantus.png'], (img) => {
+    gAssetLoader.load([this.prePath + 'assets/sprites/vantus.png'], (img) => {
       image(img, px, py-4);
     });
   }
@@ -19,13 +27,13 @@ class DrawHelper {
   }
 
   player(px, py) {
-    gAssetLoader.load(['/assets/sprites/player.png'], (img) => {
+    gAssetLoader.load([this.prePath + 'assets/sprites/player.png'], (img) => {
       image(img, px-2, py-4);
     });
   }
 
   crabocop(px, py) {
-    gAssetLoader.load(["/assets/sprites/crabocop.png"], (img) => {
+    gAssetLoader.load([this.prePath + "assets/sprites/crabocop.png"], (img) => {
       image(img, px-2, py-4);
     });
   }

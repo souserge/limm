@@ -11,7 +11,8 @@ function setup() {
   console.log("tilemap editor - beta");
   console.log(window.location.hostname);
   console.log(window.location.href);
-  loop();
+
+  gDrawHelper.setAppendingPath('../../');
 }
 
 function draw() {

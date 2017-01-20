@@ -3,7 +3,6 @@ let gGameSystem;
 let gPreloadDone = false;
 let assetList = [
   "./assets/sfx/player_jump.wav",
-  //"./assets/sfx/beastly.mp3",
   './assets/sprites/player.png',
   "./assets/sprites/crabocop.png",
   './assets/sprites/vantus.png'
@@ -25,6 +24,7 @@ function setup() {
   console.log("limm test");
 
   textFont("Courier New");
+  gDrawHelper.setAppendingPath('./');
 
   gGameSystem = new GameSystem();
   restartSketch();
