@@ -283,11 +283,11 @@ function keyPressed() {
 
 $(document).ready(function() {
   $('#defaultCanvas0').on('contextmenu', function(e){ return false;});
-  $('#defaultCanvas0').on('mouseup', function(e){
+  $(document).on('mouseup', function(e){
     flags.mousePress = false;
     flags.mouseDragged = false;
   });
-  $('#defaultCanvas0').on('mousedown', function(e){
+  $(document).on('mousedown', function(e){
     flags.mousePress = true;
     flags.mousePosPressed.x = mouseX;
     flags.mousePosPressed.y = mouseY;

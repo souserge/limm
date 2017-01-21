@@ -239,7 +239,7 @@ class GameSystem { // a class for handling interactions between objects
   changeLevelCallback(level, px, py) {
     this.setCheckpoint(px, py);
     this.teleportEntity(this.player, px, py);
-    
+
     for (let ent of level.entities) {
       this.spawnMover(ent);
     }
