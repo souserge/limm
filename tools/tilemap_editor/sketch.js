@@ -18,7 +18,6 @@ function setup() {
 function draw() {
 
   if (flags.started) {
-    if (mouseIsPressed) mouseDown();
     renderLevel();
     toolbar.draw();
   } else {
@@ -290,7 +289,7 @@ function keyPressed() {
   }
 }
 
-function mouseDown() {
+function mousePressed() {
   if (!flags.started || !flags.editing) return false;
 
   mouseButton == LEFT ? modifyLevel(mouseX, mouseY) : erase(mouseX, mouseY);
