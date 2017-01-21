@@ -1,6 +1,7 @@
 let ui = {
   "div": null,
   "start": null,
+  "load": null,
   "id": null,
   "tilesize": null,
   "viewSize": {
@@ -65,8 +66,21 @@ let ui = {
 
     this.div.child(createElement( 'label', '<br><br>'));
     this.start = createButton("start");
-    this.start.mousePressed(createLevel);
+    this.start.mousePressed(() => createLevel());
     this.div.child(this.start);
+
+    this.div.child(createElement( 'label', '<br>Or load a file:'));
+    this.load = createElement("input");
+    this.load.attribute("type", "file");
+    this.load.attribute("name", "files");
+    this.load.attribute("id", "load-file");
+    gFileManager.readAsJSON("load-file", (evt) => {
+      let result = evt.target.result;
+      let parsedRes = JSON.parse(result);
+      createLevel(parsedRes);
+    });
+
+    this.div.child(this.load);
 
     this.div.hide();
   }
