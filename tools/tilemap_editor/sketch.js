@@ -8,12 +8,16 @@ let eventToolbar = {
     id: null,
     tx: null,
     ty: null,
-    create: null
+    create: null,
+    x: -1,
+    y: -1
   },
   crabocop: {
     div: null,
     dir: null,
-    create: null
+    create: null,
+    x: -1,
+    y: -1
   }
 }
 
@@ -23,22 +27,35 @@ function createEventToolbar() {
   eventToolbar.teleport.tx = createInput('X coord');
   eventToolbar.teleport.ty = createInput('Y coord');
   eventToolbar.teleport.create = createButton('Create');
+  eventToolbar.teleport.create.mousePressed(function () {
+    saveTeleport(eventToolbar.teleport.x, eventToolbar.teleport.y);
+    eventToolbar.teleport.div.hide();
+    flags.editing = true;
+  });
 
   eventToolbar.teleport.div.child(eventToolbar.teleport.id);
   eventToolbar.teleport.div.child(eventToolbar.teleport.tx);
   eventToolbar.teleport.div.child(eventToolbar.teleport.ty);
   eventToolbar.teleport.div.child(eventToolbar.teleport.create);
 
+  eventToolbar.teleport.div.position(width+10,height/2);
   eventToolbar.teleport.div.hide();
 
-  eventToolbar.crabocop.div = createDiv('Create Teleport');
+  eventToolbar.crabocop.div = createDiv('Create Crabocop');
   eventToolbar.crabocop.dir = createInput('dir: -1/1');
   eventToolbar.crabocop.create = createButton('Create');
+  eventToolbar.crabocop.create.mousePressed(function () {
+    saveCrabocop(eventToolbar.crabocop.x, eventToolbar.crabocop.y);
+    eventToolbar.crabocop.div.hide();
+    flags.editing = true;
+  });
 
   eventToolbar.crabocop.div.child(eventToolbar.crabocop.dir);
   eventToolbar.crabocop.div.child(eventToolbar.crabocop.create);
 
+  eventToolbar.crabocop.div.position(width+10,height/2+10);
   eventToolbar.crabocop.div.hide();
+
 }
 
 function setup() {
@@ -49,7 +66,7 @@ function setup() {
   ui.div.show();
   textFont("Courier New");
   console.log("tilemap editor - beta");
-  createEventToolbar();
+
   gDrawHelper.setAppendingPath('../../');
 }
 
@@ -207,7 +224,6 @@ function modifyLevel(x, y) {
 }
 
 function createEvent(x, y) {
-  flags.editing = false;
   switch(flags.currObj) {
   case EVENTS.TELEPORT:
     createTeleport(x, y);
@@ -215,17 +231,13 @@ function createEvent(x, y) {
   case EVENTS.SPAWN.CRABOCOP:
     createCrabocop(x, y);
   }
-  flags.editing = true;
 }
 
 function createTeleport(x, y) {
   eventToolbar.teleport.div.show();
-  flags.editing = true;
-  eventToolbar.teleport.create.mouseClicked(() => {
-    saveTeleport(x, y);
-    eventToolbar.teleport.div.hide();
-    flags.editing = true;
-  });
+  flags.editing = false;
+  eventToolbar.teleport.x = x;
+  eventToolbar.teleport.y = y;
 }
 
 function saveTeleport(x, y) {
@@ -252,13 +264,10 @@ function saveTeleport(x, y) {
 }
 
 function createCrabocop(x, y) {
+  flags.editing = false;
   eventToolbar.crabocop.div.show();
-  flags.editing = true;
-  eventToolbar.crabocop.create.mouseClicked(() => {
-    saveCrabocop(x, y);
-    eventToolbar.crabocop.div.hide();
-    flags.editing = true;
-  });
+  eventToolbar.crabocop.x = x;
+  eventToolbar.crabocop.y = y;
 }
 
 function saveCrabocop(x, y) {
