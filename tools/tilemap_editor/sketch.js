@@ -184,9 +184,16 @@ function createEvent(x, y) {
   case EVENTS.SPAWN.CRABOCOP:
     createCrabocop(x, y);
   }
+  flags.editing = true;
 }
 
 function createTeleport(x, y) {
+  let j = floor(x/level.tilesize);
+  let i = floor(y/level.tilesize);
+  let idx = level.size.x*i+j;
+  if (level.eventlayer.data[idx] !== 0) return;
+  flags.currObj = 0;
+
   let toLevel = prompt("What level this door goes to?/n(close the prompt if to the same one)", 'yourWorld/anotherLevel');
   let tilex = prompt("Please, enter the X coordinate of the tile on the map", '16');
   let tiley = prompt("Please, enter the Y coordinate of the tile on the map", '10');
@@ -200,16 +207,11 @@ function createTeleport(x, y) {
       }
     }
   };
-  if (confirm("Are you sure you want to place this Teleport?")) {
-    let j = floor(x/level.tilesize);
-    let i = floor(y/level.tilesize);
-    let idx = level.size.x*i+j;
-    level.eventlayer.data[idx] = teleport;
-  }
-  flags.editing = true;
+  level.eventlayer.data[idx] = teleport;
 }
 
 function createCrabocop(x, y) {
+  flags.currObj = 0;
   let entDir = prompt("Please enter the initial direction/n( left = -1; right = 1)", '1');
   let crabocop = {
     type: EVENTS.SPAWN.CRABOCOP,
@@ -222,10 +224,7 @@ function createCrabocop(x, y) {
       hei: 16
     }
   };
-  if (confirm("Are you sure you want to place this Crabocop?")) {
-    level.entities.push(crabocop);
-  }
-  flags.editing = true;
+  level.entities.push(crabocop);
 }
 
 function drawTile(x, y) {
