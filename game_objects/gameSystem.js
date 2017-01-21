@@ -7,6 +7,10 @@ class GameSystem { // a class for handling interactions between objects
     this.level = null;
     this.player = new Player(0,0);
     this.timeManager = new TimeManager();
+    this.checkpoint = {
+      x: 0,
+      y: 0
+    }
     this.flags = {
       level: {
         requested: null,
@@ -41,26 +45,80 @@ class GameSystem { // a class for handling interactions between objects
     }
   }
 
-  teleportEntity(ent, x, y) {
-    ent.posX = x;
-    ent.posY = y;
-    ent.velX = 0;
-    ent.velY = 0;
-    ent.isGrounded = false;
+  update(dt) { // update player and check for collisions
+    this.checkEvents();
+    this.level.checkActiveCollision(this.player);
+
+    if (this.player.killed) {
+      this.restartGame();
+      return;
+    }
+    for (let mover of this.movers) {
+      if(!mover.killed) {
+        mover.update(dt);
+        this.killOutOfBoundMover(mover);
+      }
+    }
+    this.player.update(dt);
+    this.killOutOfBoundMover(this.player);
   }
 
-  teleportPlayer(x,y) {
-    this.teleportEntity(this.player, x, y);
+  animateFrame() {
+    this.loadLevel();
+
+    if (!this.flags.level.loaded || this.level === null) return;
+
+    this.timeManager.updateDelta();
+    let preventer = 0;
+    while (this.timeManager.dt >= this.timeManager.timestep) {
+      this.keyCheck();
+      this.update();
+      this.timeManager.dt -= this.timeManager.timestep;
+      if (++preventer > 100) {
+        this.timeManager.dt = 0;
+        break;
+      }
+    }
+    this.render(this.timeManager.dt/this.timeManager.timestep);
   }
 
-  spawnMover(ent) {
-    this.movers.push(ent);
+  render(lag) {
+    if (this.flags.game.over) {
+      textAlign(CENTER);
+      textSize(48);
+      fill(255);
+      text("Game Over", width/2, height/2);
+      if (this.flags.game.halt <= 0) {
+        textSize(24);
+        text("press action to continue", width/2, height/2+48);
+      }
+      return;
+    }
+
+    this.level.render();
+
+    for (let mover of this.movers) {
+      if(!mover.killed) {
+        mover.render(lag);
+      }
+    }
+
+    this.player.render(lag);
   }
 
-  changeLevel(levelID, callback) {
-    this.flags.level.requested = levelID;
-    this.flags.level.callback = callback;
-  }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   checkInput(keycodes, key) {
     for (let keycode of keycodes) {
@@ -103,102 +161,120 @@ class GameSystem { // a class for handling interactions between objects
       this.flags.game.halt = GAME_SYSTEM.HALT_TIME;
       this.player.killed = false;
       this.flags.game.over = false;
-      this.movers = [];
-      //maybe this should be as well
-      //this.level = null;
-
-      this.flags.level.requested = null;
-      this.flags.level.loaded = false;
-      this.flags.level.callback = null;
-      restartSketch();
+      //this.movers = [];
+      this.changeLevel(this.level.id, (level) => {
+        this.changeLevelCallback(level,this.checkpoint.x, this.checkpoint.y);
+      });
     }
   }
 
-  update(dt) { // update player and check for collisions
-    this.checkEvents(this.player);
-    this.level.checkActiveCollision(this.player);
-
-    if (this.player.killed) {
-      this.restartGame();
-      return;
-    }
-    for (let mover of this.movers) {
-      if(!mover.killed) {
-        mover.update(dt);
-      }
-    }
-    this.player.update(dt);
+  spawnMover(ent) {
+    this.movers.push(ent);
   }
 
-  loadLevel() {
-    if (this.flags.level.requested !== null) {
-      this.flags.level.loaded = false;
-      this.level = gameWorlds[currWorld].getLevel(this.flags.level.requested); //TODO
-      this.flags.level.loaded = true;
-      this.flags.level.requested = null;
-      this.movers = [];
-
-      if (this.flags.level.callback) {
-        this.flags.level.callback();
-      }
-      this.flags.level.callback = null;
-    }
+  setCheckpoint(px, py) {
+    this.checkpoint.x = px;
+    this.checkpoint.y = py;
   }
 
-  animateFrame() {
-    this.loadLevel();
-
-    if (!this.flags.level.loaded || this.level === null) return;
-
-    this.timeManager.updateDelta();
-    let preventer = 0;
-    while (this.timeManager.dt >= this.timeManager.timestep) {
-      this.keyCheck();
-      this.update();
-      this.timeManager.dt -= this.timeManager.timestep;
-      if (++preventer > 100) {
-        this.timeManager.dt = 0;
-        break;
-      }
-    }
-    this.render(this.timeManager.dt/this.timeManager.timestep);
+  killOutOfBoundMover(mover) {
+    if (mover.posX > this.level.pixelSize.x ||
+        mover.posY > this.level.pixelSize.y ||
+        mover.posX < this.level.pixelOffset.x ||
+        mover.posY < this.level.pixelOffset.y) mover.killed = true;
   }
 
-  checkEvents(mover) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  teleportEntity(ent, x, y) {
+    ent.posX = x;
+    ent.posY = y;
+    ent.velX = 0;
+    ent.velY = 0;
+    ent.isGrounded = false;
+  }
+
+  teleportPlayer(x,y) {
+    this.teleportEntity(this.player, x, y);
+  }
+
+  changeLevel(levelID, callback) {
+    this.flags.level.requested = levelID;
+    this.flags.level.callback = callback;
+  }
+
+  checkEvents() {
+    let mover = this.player;
     let res = this.level.eventlayer.collision(mover.posX, mover.posY, mover.wid, mover.hei);
-    if (res !== false && this.input.action.pressed) {
+    if (res && res !== false && this.input.action.pressed) {
       switch(res.type) {
         case EVENTS.TELEPORT:
-          if (res.level !== null) {
-            this.changeLevel(res.level);
+          if (res.data.level.id !== null) {
+            this.changeLevel(res.data.level.id, (level) => {
+              let px = (res.data.level.tx + level.offset.x)*level.tilesize;
+              let py = (res.data.level.ty + level.offset.y)*level.tilesize - 0.01;
+              this.changeLevelCallback(level, px, py);
+            });
+          } else {
+            this.teleportPlayer((res.data.level.tx+this.level.offset.x)*res.tilesize, (res.data.level.ty+this.level.offset.y)*res.tilesize - 0.01);
           }
-          this.teleportEntity(this.player, (res.x+this.level.offset.x)*res.tilesize, (res.y+this.level.offset.y)*res.tilesize - 0.01);
           break;
       }
     }
   }
 
-  render(lag) {
-    if (this.flags.game.over) {
-      textAlign(CENTER);
-      textSize(48);
-      fill(255);
-      text("Game Over", width/2, height/2);
-      if (this.flags.game.halt <= 0) {
-        textSize(24);
-        text("press action to continue", width/2, height/2+48);
-      }
-      return;
+
+  changeLevelCallback(level, px, py) {
+    this.setCheckpoint(px, py);
+    this.teleportEntity(this.player, px, py);
+    
+    for (let ent of level.entities) {
+      this.spawnMover(ent);
     }
-
-    this.level.render();
-
-    for (let mover of this.movers) {
-      if(!mover.killed) {
-        mover.render(lag);
-      }
-    }
-
-    this.player.render(lag);
   }
+
+  setStartLevel(path) {
+    this.changeLevel(path, (level) => {
+      let spawnTX = level.size.x/2; // TODO!!!!!!!!!!!!!!!!!!!! change to tx and ty in level editor
+      let spawnTY = level.size.y/2;
+      if (level.playerSpawn.value) {
+        spawnTX = level.playerSpawn.tx;
+        spawnTY = level.playerSpawn.ty;
+      }
+      let px = (spawnTX+level.offset.x)*level.tilesize;
+      let py = (spawnTY+level.offset.y)*level.tilesize - 0.01;
+      this.changeLevelCallback(level, px, py);
+    });
+  }
+
+  loadLevel() {
+    if (this.flags.level.requested !== null) {
+      this.flags.level.loaded = false;
+      gLevelLoader.get(this.flags.level.requested, (newLevel) => {
+
+        this.level = newLevel;
+        this.movers = [];
+        if (this.flags.level.callback) {
+          this.flags.level.callback(newLevel);
+        }
+        this.flags.level.callback = null;
+
+        this.flags.level.loaded = true;
+      });
+      this.flags.level.requested = null; // to prevent loading level multiple times
+    }
+  }
+
 }

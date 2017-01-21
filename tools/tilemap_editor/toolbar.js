@@ -44,7 +44,7 @@ let toolbar = {
       this.tilepos = createP('Tile: ' + 'none' + "; Pos: " + '-' + ', ' + '-'),
 
       this.save.id("btn-save");
-      $("#btn-save").on('click', function() {
+      $("#btn-save").on('click', function() {    
         let space = toolbar.uglify.checked() ? undefined : 2;
         let text = JSON.stringify(level, null, space);
         gFileManager.saveAsJSON(level.id, text);

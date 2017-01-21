@@ -1,5 +1,6 @@
 //SWTUP AND MAIN LOOP
 let cnv = null;
+let pxoff, pyoff;
 
 function setup() {
   cnv = createCanvas(windowWidth/2, windowHeight/2);
@@ -9,8 +10,6 @@ function setup() {
   ui.div.show();
   textFont("Courier New");
   console.log("tilemap editor - beta");
-  console.log(window.location.hostname);
-  console.log(window.location.href);
 
   gDrawHelper.setAppendingPath('../../');
 }
@@ -99,7 +98,7 @@ function renderEntities() {
   for (let ent of level.entities) {
     switch (ent.type) {
     case EVENTS.SPAWN.CRABOCOP:
-    gDrawHelper.crabocop(ent.data.px, ent.data.py);
+    gDrawHelper.crabocop(ent.data.px - pxoff, ent.data.py - pyoff);
     break;
     }
   }
@@ -141,11 +140,6 @@ function renderTeleport(px, py) {
   fill(255);
   text("T", px+level.tilesize/2, py+level.tilesize);
 }
-
-
-
-
-
 
 
 
@@ -212,8 +206,8 @@ function createCrabocop(x, y) {
   let crabocop = {
     type: EVENTS.SPAWN.CRABOCOP,
     data: {
-      px: x,
-      py: y,
+      px: x + pxoff,
+      py: y + pyoff,
       dir: (entDir === null || entDir === "" || entDir !== '-1' || entDir !== '1') ? 1 : parseInt(entDir),
 
       wid: 16, // TODO: very bad style
@@ -237,11 +231,12 @@ function erase(x, y) {
   if (x >= level.size.x*level.tilesize || y >= level.size.y*level.tilesize ||
       x < 0 || y < 0) return;
 
+
   for (let i = 0; i < level.entities.length; i++) {
     let ent = level.entities[i];
     if (flags.currLayer === 'eventlayer' &&
         ent.type == EVENTS.SPAWN.CRABOCOP &&
-        gCollideManager.pointRect(x, y, ent.data.px, ent.data.py, ent.data.wid, ent.data.hei)) {
+        gCollideManager.pointRect(x, y, ent.data.px - pxoff, ent.data.py - pyoff, ent.data.wid, ent.data.hei)) {
       level.entities.splice(i, 1);
       return;
     }
@@ -253,9 +248,6 @@ function erase(x, y) {
 
   layer.data[idx] = 0;
 }
-
-
-
 
 
 
@@ -288,7 +280,6 @@ function keyPressed() {
     }
   }
 }
-
 
 $(document).ready(function() {
   $('#defaultCanvas0').on('contextmenu', function(e){ return false;});
@@ -334,6 +325,7 @@ function mouseHandler() {
     return false;
   }
 }
+
 
 
 

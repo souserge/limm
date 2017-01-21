@@ -41,11 +41,7 @@ function windowResized() {
 }
 
 function restartSketch() {
-    gGameSystem.changeLevel('TEST', function() {
-    gGameSystem.spawnMover(new Crabocop(TSIZE*10, height-TSIZE*2-2, 1));
-    gGameSystem.spawnMover(new Crabocop(width/2, height/2+40, 1));
-    gGameSystem.teleportPlayer(width-TSIZE*2-2, height-TSIZE*2-2);
-  });
+    gGameSystem.setStartLevel('world_0/test');
 }
 
 function draw() {

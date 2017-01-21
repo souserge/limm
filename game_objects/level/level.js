@@ -1,5 +1,5 @@
 class Level {
-    constructor(levelId, tilelayerData, eventlayerData, entitylayerData, tilesize, wid, hei, xoff, yoff, cr, cg, cb) {
+    constructor(levelId, tilelayerData, eventlayerData, entitiesData, tilesize, wid, hei, xoff, yoff, cr, cg, cb, playerSpawn) {
         this.id = levelId || "noid";
         this.tilesize = tilesize || 16;
 
@@ -18,9 +18,20 @@ class Level {
             b: cb || 100
         }
 
+        this.pixelSize = {
+          x: this.size.x*this.tilesize,
+          y: this.size.y*this.tilesize
+        }
+
+        this.pixelOffset = {
+          x: this.offset.x*this.tilesize,
+          y: this.offset.y*this.tilesize
+        }
+
         this.tilelayer = new Tilelayer(tilelayerData, this.tilesize, this.size, this.offset, this.color);
         this.eventlayer = new Eventlayer(eventlayerData, this.tilesize, this.size, this.offset);
-        this.entitylayer = new Entitylayer(entitylayerData, this.tilesize, this.size, this.offset);
+        this.entities = entitiesData || [];
+        this.playerSpawn = playerSpawn || {value:false};
     }
 
     checkActiveCollision(mover) {

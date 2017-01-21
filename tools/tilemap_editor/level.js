@@ -68,6 +68,10 @@ function createLevel() {
       level.eventlayer.data.push(0);
     }
   }
+
+  pxoff = level.offset.x*level.tilesize;
+  pyoff = level.offset.y*level.tilesize;
+
   ui.div.hide();
   toolbar.div.show();
 }

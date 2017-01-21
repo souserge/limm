@@ -19,11 +19,11 @@ class Crabocop extends Mover {
 
   moveX() {
     let edgeX = Math.sign(this.velX) == 1 ? this.wid : 0;
-    if(gGameSystem.level.wallCollision(this.posX + edgeX + 2*Math.sign(this.velX), this.posY + this.hei-1)) {
+    if(gGameSystem.level.wallCollision(this.posX + edgeX + 4*this.dirX, this.posY + this.hei-1)) {
       this.dirX *= -1;
     }
 
-    if (this.isGrounded && !gGameSystem.level.wallCollision(this.posX + edgeX, this.posY + this.hei + 2)) {
+    if (this.isGrounded && !gGameSystem.level.wallCollision(this.posX + edgeX + this.dirX, this.posY + this.hei + 2)) {
       this.dirX *= -1;
       this.velX = 0;
     }
