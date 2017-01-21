@@ -3129,8 +3129,8 @@
         "data": {
           "level": {
             "id": "world_0/anton_room",
-            "tx": 44,
-            "ty": 3
+            "tx": 46,
+            "ty": 28
           }
         }
       },
@@ -3390,16 +3390,6 @@
     {
       "type": 1,
       "data": {
-        "px": 51,
-        "py": 429,
-        "dir": 1,
-        "wid": 16,
-        "hei": 16
-      }
-    },
-    {
-      "type": 1,
-      "data": {
         "px": 126,
         "py": 430,
         "dir": 1,
@@ -3419,7 +3409,7 @@
     }
   ],
   "playerSpawn": {
-    "value": true,
+    "value": false,
     "tx": 28,
     "ty": 19
   }

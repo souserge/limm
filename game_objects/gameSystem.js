@@ -227,13 +227,12 @@ class GameSystem { // a class for handling interactions between objects
               this.changeLevelCallback(level, px, py);
             });
           } else {
-            this.teleportPlayer((res.data.level.tx+this.level.offset.x)*res.tilesize, (res.data.level.ty+this.level.offset.y)*res.tilesize - 0.01);
+            this.teleportPlayer((res.data.level.tx+this.level.offset.x)*this.level.tilesize, (res.data.level.ty+this.level.offset.y)*this.level.tilesize - 0.01);
           }
           break;
       }
     }
   }
-
 
   changeLevelCallback(level, px, py) {
     this.setCheckpoint(px, py);
