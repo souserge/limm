@@ -337,6 +337,7 @@ function changeEventObj(kcode) {
     flags.currObj = EVENTS.SPAWN.CRABOCOP;
     break;
   }
+  flags.mousePress = false;
 }
 
 function changeDrawObj(kcode) {
@@ -351,4 +352,5 @@ function changeDrawObj(kcode) {
     flags.currObj = TILES.VANTUS;
     break;
   }
+  flags.mousePress = false;
 }
