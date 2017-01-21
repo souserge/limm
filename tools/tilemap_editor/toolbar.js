@@ -12,11 +12,14 @@ let toolbar = {
     },
     draw: function() {
       let modeName = getModeName(flags.mode);
-      this.mode.html("Mode: " + modeName);
+      let dragging = flags.dragging ? '; Drag on' : '';
+      this.mode.html("Mode: " + modeName + dragging);
       this.currLayer.html("Layer: " + flags.currLayer);
       let tileName = getTileName(flags.currObj, flags.mode);
-      let tilePos = getCurrTilePos();
-      this.tilepos.html('Tile: ' + tileName + "; Pos(X, Y): " + tilePos.x + ', ' + tilePos.y);
+      let tilePos = getTilePos(mouseX, mouseY);
+      let tpx = tilePos.x !== null ? tilePos.x : '-';
+      let tpy = tilePos.y !== null ? tilePos.y : '-';
+      this.tilepos.html('Tile: ' + tileName + "; Pos(X, Y): " + tpx + ', ' + tpy);
       if (this.playerSpawn.value.checked()) {
         level.playerSpawn.value = true;
         level.playerSpawn.tx = parseInt(this.playerSpawn.tx.value());

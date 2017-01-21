@@ -190,7 +190,6 @@ function createTeleport(x, y) {
   let i = floor(y/level.tilesize);
   let idx = level.size.x*i+j;
   if (level.eventlayer.data[idx] !== 0) return;
-  flags.currObj = 0;
 
   let toLevel = prompt("What level this door goes to?/n(close the prompt if to the same one)", 'yourWorld/anotherLevel');
   let tilex = prompt("Please, enter the X coordinate of the tile on the map", '16');
@@ -209,7 +208,6 @@ function createTeleport(x, y) {
 }
 
 function createCrabocop(x, y) {
-  flags.currObj = 0;
   let entDir = prompt("Please enter the initial direction/n( left = -1; right = 1)", '1');
   let crabocop = {
     type: EVENTS.SPAWN.CRABOCOP,
@@ -278,6 +276,9 @@ function keyPressed() {
       flags.mode = MODE.EVENT;
       flags.currLayer = 'eventlayer';
     }
+    if (keyCode == 68) {
+      flags.dragging = !flags.dragging;
+    }
     if (keyCode > 47 && keyCode < 58) {
       if (flags.mode == MODE.DRAW) {
         changeDrawObj(keyCode);
@@ -293,14 +294,41 @@ $(document).ready(function() {
   $('#defaultCanvas0').on('contextmenu', function(e){ return false;});
   $('#defaultCanvas0').on('mouseup', function(e){
     flags.mousePress = false;
+    flags.mouseDragged = false;
   });
   $('#defaultCanvas0').on('mousedown', function(e){
     flags.mousePress = true;
+    flags.mousePosPressed.x = mouseX;
+    flags.mousePosPressed.y = mouseY;
+  });
+  $('#defaultCanvas0').on('mousemove', function(e){
+    if (flags.mousePress) {
+      flags.mouseDragged = true;
+    }
   });
 });
 
 function mouseHandler() {
   if (!flags.started || !flags.editing) return false;
+  //console.log("drawing");
+  if (flags.mouseDragged && flags.mode == MODE.DRAW && flags.dragging) {
+    //xdir = Math.sign(mouseX,flags.mousePosPressed.x);
+    xmin = Math.min(mouseX, flags.mousePosPressed.x);
+    xmax = Math.max(mouseX, flags.mousePosPressed.x);
+    ymin = Math.min(mouseY, flags.mousePosPressed.y);
+    ymax = Math.max(mouseY, flags.mousePosPressed.y);
+    minTile = getTilePos(xmin, ymin);
+    maxTile = getTilePos(xmax, ymax);
+    for (let y = minTile.y; y <= maxTile.y; y ++) {
+      for (let x = minTile.x; x <= maxTile.x; x++) {
+        mouseButton == LEFT ?
+                            modifyLevel(x*level.tilesize+0.1, y*level.tilesize+0.1) :
+                            erase(x*level.tilesize+0.1, y*level.tilesize+0.1);
+      }
+    }
+    return false;
+  }
+
   if (flags.mousePress) {
     mouseButton == LEFT ? modifyLevel(mouseX, mouseY) : erase(mouseX, mouseY);
     return false;
@@ -316,15 +344,15 @@ function mouseHandler() {
 
 
 //HELPER FUNCTIONALITY
-function getCurrTilePos() {
+function getTilePos(x, y) {
   if (flags.currLayer === null ||
-      mouseX >= level.size.x*level.tilesize ||
-      mouseY >= level.size.y*level.tilesize ||
-      mouseX < 0 || mouseY < 0) return {x:'-', y: '-'};
+      x >= level.size.x*level.tilesize ||
+      y >= level.size.y*level.tilesize ||
+      x < 0 || y < 0) return {x:null, y: null};
 
   return {
-    x: floor(mouseX/level.tilesize),
-    y: floor(mouseY/level.tilesize),
+    x: floor(x/level.tilesize),
+    y: floor(y/level.tilesize),
   }
 }
 

@@ -5,5 +5,11 @@
     currObj: -1,
     mode: -1,
     editing: false,
-    mousePress: false
+    dragging: false,
+    mousePress: false,
+    mousePosPressed: {
+      x: -1,
+      y: -1
+    },
+    mouseDragged: false
   };
