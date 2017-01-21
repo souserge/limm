@@ -18,6 +18,7 @@ function setup() {
 function draw() {
 
   if (flags.started) {
+    mouseHandler();
     renderLevel();
     toolbar.draw();
   } else {
@@ -30,9 +31,7 @@ function draw() {
   }
 }
 
-$(document).ready(function() {
-  $('#defaultCanvas0').on('contextmenu', function(e){ return false;});
-});
+
 
 
 
@@ -289,14 +288,24 @@ function keyPressed() {
   }
 }
 
-function mousePressed() {
+
+$(document).ready(function() {
+  $('#defaultCanvas0').on('contextmenu', function(e){ return false;});
+  $('#defaultCanvas0').on('mouseup', function(e){
+    flags.mousePress = false;
+  });
+  $('#defaultCanvas0').on('mousedown', function(e){
+    flags.mousePress = true;
+  });
+});
+
+function mouseHandler() {
   if (!flags.started || !flags.editing) return false;
-
-  mouseButton == LEFT ? modifyLevel(mouseX, mouseY) : erase(mouseX, mouseY);
-  return false;
+  if (flags.mousePress) {
+    mouseButton == LEFT ? modifyLevel(mouseX, mouseY) : erase(mouseX, mouseY);
+    return false;
+  }
 }
-
-
 
 
 
