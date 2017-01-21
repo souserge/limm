@@ -1,7 +1,3 @@
-const GAME_SYSTEM = {
-  HALT_TIME: 5
-}
-
 class GameSystem { // a class for handling interactions between objects
   constructor() {
     this.level = null;
@@ -19,7 +15,6 @@ class GameSystem { // a class for handling interactions between objects
       },
       game: {
         over: false,
-        halt: GAME_SYSTEM.HALT_TIME
       }
     }
 
@@ -46,13 +41,14 @@ class GameSystem { // a class for handling interactions between objects
   }
 
   update(dt) { // update player and check for collisions
+    if (this.flags.game.over) {
+      this.restartLevel();
+      return;
+    }
+
     this.checkEvents();
     this.level.checkActiveCollision(this.player);
 
-    if (this.player.killed) {
-      this.restartGame();
-      return;
-    }
     for (let mover of this.movers) {
       if(!mover.killed) {
         mover.update(dt);
@@ -61,6 +57,9 @@ class GameSystem { // a class for handling interactions between objects
     }
     this.player.update(dt);
     this.killOutOfBoundMover(this.player);
+    if (this.player.killed) {
+      this.setRestartGame();
+    }
   }
 
   animateFrame() {
@@ -88,7 +87,7 @@ class GameSystem { // a class for handling interactions between objects
       textSize(48);
       fill(255);
       text("Game Over", width/2, height/2);
-      if (this.flags.game.halt <= 0) {
+      if (this.flags.level.loaded) {
         textSize(24);
         text("press action to continue", width/2, height/2+48);
       }
@@ -153,19 +152,18 @@ class GameSystem { // a class for handling interactions between objects
                     this.input.action);
   }
 
-  restartGame() {
-    this.flags.game.over = true;
-
-    this.flags.game.halt -= 0.1;
-    if (this.flags.game.halt <= 0 && this.input.action.pressed) {
-      this.flags.game.halt = GAME_SYSTEM.HALT_TIME;
+  restartLevel() {
+    if (this.flags.level.loaded && this.input.action.pressed) {
       this.player.killed = false;
       this.flags.game.over = false;
-      //this.movers = [];
-      this.changeLevel(this.level.id, (level) => {
-        this.changeLevelCallback(level,this.checkpoint.x, this.checkpoint.y);
-      });
     }
+  }
+
+  setRestartGame() {
+    this.flags.game.over = true;
+    this.changeLevel(this.level.id, (level) => {
+      this.changeLevelCallback(level,this.checkpoint.x, this.checkpoint.y);
+    });
   }
 
   spawnMover(ent) {
@@ -213,6 +211,7 @@ class GameSystem { // a class for handling interactions between objects
   changeLevel(levelID, callback) {
     this.flags.level.requested = levelID;
     this.flags.level.callback = callback;
+    this.flags.level.loaded = false;
   }
 
   checkEvents() {
@@ -240,6 +239,7 @@ class GameSystem { // a class for handling interactions between objects
     this.setCheckpoint(px, py);
     this.teleportEntity(this.player, px, py);
 
+    this.movers = [];
     for (let ent of level.entities) {
       ent.killed = false;
       this.spawnMover(ent);
@@ -262,11 +262,9 @@ class GameSystem { // a class for handling interactions between objects
 
   loadLevel() {
     if (this.flags.level.requested !== null) {
-      this.flags.level.loaded = false;
       gLevelLoader.get(this.flags.level.requested, (newLevel) => {
 
         this.level = newLevel;
-        this.movers = [];
         if (this.flags.level.callback) {
           this.flags.level.callback(newLevel);
         }
