@@ -4,37 +4,64 @@ let toolbar = {
     save: null,
     mode: null,
     tilepos: null,
+    playerSpawn: {
+      div: null,
+      value: null,
+      tx: null,
+      ty: null
+    },
     draw: function() {
       let modeName = getModeName(flags.mode);
       this.mode.html("Mode: " + modeName);
       this.currLayer.html("Layer: " + flags.currLayer);
       let tileName = getTileName(flags.currObj, flags.mode);
       let tilePos = getCurrTilePos();
-      this.tilepos.html('Tile: ' + tileName + "; Pos: " + tilePos.x + ', ' + tilePos.y);
+      this.tilepos.html('Tile: ' + tileName + "; Pos(X, Y): " + tilePos.x + ', ' + tilePos.y);
+      if (this.playerSpawn.value.checked()) {
+        level.playerSpawn.value = true;
+        level.playerSpawn.tx = parseInt(this.playerSpawn.tx.value());
+        level.playerSpawn.ty = parseInt(this.playerSpawn.ty.value());
+        this.playerSpawn.div.show();
+      } else {
+        this.playerSpawn.div.hide();
+        level.playerSpawn.value = false;
+      }
     },
     init: function() {
       this.div = createDiv('Toolbar'),
       this.save = createButton('Save'),
       this.uglify = createCheckbox('Uglify', false);
+      this.playerSpawn.value = createCheckbox('Player spawn?', false);
+      this.playerSpawn.div = createDiv('');
+      this.playerSpawn.tx = createInput(-1);
+      this.playerSpawn.ty = createInput(-1);
+
       this.mode = createP("Mode: " + "none"),
       this.currLayer = createP("Layer: " + "none"),
       this.tilepos = createP('Tile: ' + 'none' + "; Pos: " + '-' + ', ' + '-'),
 
       this.save.id("btn-save");
       $("#btn-save").on('click', function() {
-        let space = this.uglify.checked() ? undefined : 2;
+        let space = toolbar.uglify.checked() ? undefined : 2;
         let text = JSON.stringify(level, null, space);
-        let filename = level.id;
-        let blob = new Blob([text], {type: "application/json"});
-        saveAs(blob, filename + ".json");
+        gFileManager.saveAsJSON(level.id, text);
       });
+
+      this.playerSpawn.div.child(createElement( 'label', '<br>Tile X pos:'));
+      this.playerSpawn.div.child(this.playerSpawn.tx);
+      this.playerSpawn.div.child(createElement( 'label', '<br>Tile Y pos:'));
+      this.playerSpawn.div.child(this.playerSpawn.ty);
+
       this.div.child(this.tilepos);
       this.div.child(this.mode);
       this.div.child(this.currLayer);
+      this.div.child(this.playerSpawn.value);
+      this.div.child(this.playerSpawn.div);
       this.div.child(this.uglify);
       this.div.child(this.save);
 
       this.div.hide();
+      this.playerSpawn.div.hide();
     }
 };
 

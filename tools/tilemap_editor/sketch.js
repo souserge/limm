@@ -62,30 +62,49 @@ function renderBorders() {
   rect(-1*level.offset.x*level.tilesize, (level.viewSize.y - level.offset.y)*level.tilesize, (level.size.x+level.offset.x)*level.tilesize, (level.size.y + level.offset.y - level.viewSize.y)*level.tilesize);
 }
 
+
+
 function renderMap() {
   if (flags.currLayer === null) return;
-  let layer = level[flags.currLayer];
 
+  if (flags.currLayer !== 'eventlayer') {
+    renderEntities();
+  }
   for (let i = 0; i < level.size.y; i++) {
     for (let j = 0; j < level.size.x; j++) {
       let idx = level.size.x*i+j;
-      if (layer.data[idx] !== 0) {
-        switch (flags.currLayer) {
-          case "tilelayer":
-            renderTileTile(layer.data[idx], j, i);
-            break;
-          case "eventlayer":
-            renderEventTile(layer.data[idx], j, i);
-            renderEntities();
-            break;
-        }
+      if (level.tilelayer.data[idx] !== 0) {
+        renderTileTile(level.tilelayer.data[idx], j, i);
       }
     }
   }
+
+
+  if (flags.currLayer === 'eventlayer') {
+    fill('rgba(0,0,0, 0.25)');
+    noStroke();
+    rect(0,0,width,height);
+    for (let i = 0; i < level.size.y; i++) {
+      for (let j = 0; j < level.size.x; j++) {
+        let idx = level.size.x*i+j;
+        if (level.eventlayer.data[idx] !== 0) {
+            renderEventTile(level.eventlayer.data[idx], j, i);
+        }
+      }
+    }
+    renderEntities();
+  }
+
 }
 
 function renderEntities() {
-
+  for (let ent of level.entities) {
+    switch (ent.type) {
+    case EVENTS.SPAWN.CRABOCOP:
+    gDrawHelper.crabocop(ent.data.px, ent.data.py);
+    break;
+    }
+  }
 }
 
 function renderTileTile(tileid, x, y) {
@@ -168,24 +187,44 @@ function createEvent(x, y) {
 }
 
 function createTeleport(x, y) {
-  let j = floor(x/level.tilesize);
-  let i = floor(y/level.tilesize);
-  let idx = level.size.x*i+j;
+  let toLevel = prompt("What level this door goes to?/n(close the prompt if to the same one)", 'yourWorld/anotherLevel');
+  let tilex = prompt("Please, enter the X coordinate of the tile on the map", '16');
+  let tiley = prompt("Please, enter the Y coordinate of the tile on the map", '10');
   let teleport = {
     type: EVENTS.TELEPORT,
     data: {
       level: {
-        id: 'change this to real id',
-        tx: -1, // TODO: change events handling to read tx and ty
-        ty: -1
+        id: (toLevel === null || toLevel === "") ? null : toLevel,
+        tx: (tilex === null || tilex === "") ? 8 : parseInt(tilex), // TODO: change events handling to read tx and ty
+        ty: (tiley === null || tiley === "") ? 8 : parseInt(tiley)
       }
     }
   };
-  level.eventlayer.data[idx] = teleport;
+  if (confirm("Are you sure you want to place this Teleport?")) {
+    let j = floor(x/level.tilesize);
+    let i = floor(y/level.tilesize);
+    let idx = level.size.x*i+j;
+    level.eventlayer.data[idx] = teleport;
+  }
   flags.editing = true;
 }
 
 function createCrabocop(x, y) {
+  let entDir = prompt("Please enter the initial direction/n( left = -1; right = 1)", '1');
+  let crabocop = {
+    type: EVENTS.SPAWN.CRABOCOP,
+    data: {
+      px: x,
+      py: y,
+      dir: (entDir === null || entDir === "" || entDir !== '-1' || entDir !== '1') ? 1 : parseInt(entDir),
+
+      wid: 16, // TODO: very bad style
+      hei: 16
+    }
+  };
+  if (confirm("Are you sure you want to place this Crabocop?")) {
+    level.entities.push(crabocop);
+  }
   flags.editing = true;
 }
 
@@ -202,6 +241,16 @@ function erase(x, y) {
 
   if (x >= level.size.x*level.tilesize || y >= level.size.y*level.tilesize ||
       x < 0 || y < 0) return;
+
+  for (let i = 0; i < level.entities.length; i++) {
+    let ent = level.entities[i];
+    if (flags.currLayer === 'eventlayer' &&
+        ent.type == EVENTS.SPAWN.CRABOCOP &&
+        gCollideManager.pointRect(x, y, ent.data.px, ent.data.py, ent.data.wid, ent.data.hei)) {
+      level.entities.splice(i, 1);
+      return;
+    }
+  }
 
   let j = floor(x/level.tilesize);
   let i = floor(y/level.tilesize);
@@ -225,10 +274,10 @@ function erase(x, y) {
 //EVENT HANDLING
 function keyPressed() {
   if (flags.editing) {
-    if (keyCode == 90) {
+    if (keyCode == 81) {
       flags.mode = MODE.DRAW;
       flags.currLayer = 'tilelayer';
-    } else if (keyCode == 88) {
+    } else if (keyCode == 87) {
       flags.mode = MODE.EVENT;
       flags.currLayer = 'eventlayer';
     }

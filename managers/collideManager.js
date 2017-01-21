@@ -8,6 +8,10 @@ class CollideManager {
     }
     return false;
   }
+
+  pointRect(px, py, x, y, w, h) {
+    return (px >= x && px <= x+w && py >= y && py <= y+h);
+  }
 }
 
 let gCollideManager = new CollideManager();

@@ -26,7 +26,12 @@ let level = {
     "data": []
   },
 
-  "entities": []
+  "entities": [],
+  "playerSpawn": {
+    "value": false,
+    "tx": -1,
+    "ty": -1
+  }
 };
 
 function createLevel() {
