@@ -2,6 +2,45 @@
 let cnv = null;
 let pxoff, pyoff;
 
+let eventToolbar = {
+  teleport: {
+    div: null,
+    id: null,
+    tx: null,
+    ty: null,
+    create: null
+  },
+  crabocop: {
+    div: null,
+    dir: null,
+    create: null
+  }
+}
+
+function createEventToolbar() {
+  eventToolbar.teleport.div = createDiv('Create Teleport');
+  eventToolbar.teleport.id = createInput('Id: world/level');
+  eventToolbar.teleport.tx = createInput('X coord');
+  eventToolbar.teleport.ty = createInput('Y coord');
+  eventToolbar.teleport.create = createButton('Create');
+
+  eventToolbar.teleport.div.child(eventToolbar.teleport.id);
+  eventToolbar.teleport.div.child(eventToolbar.teleport.tx);
+  eventToolbar.teleport.div.child(eventToolbar.teleport.ty);
+  eventToolbar.teleport.div.child(eventToolbar.teleport.create);
+
+  eventToolbar.teleport.div.hide();
+
+  eventToolbar.crabocop.div = createDiv('Create Teleport');
+  eventToolbar.crabocop.dir = createInput('dir: -1/1');
+  eventToolbar.crabocop.create = createButton('Create');
+
+  eventToolbar.crabocop.div.child(eventToolbar.crabocop.dir);
+  eventToolbar.crabocop.div.child(eventToolbar.crabocop.create);
+
+  eventToolbar.crabocop.div.hide();
+}
+
 function setup() {
   cnv = createCanvas(windowWidth/2, windowHeight/2);
   createP('');
@@ -10,7 +49,7 @@ function setup() {
   ui.div.show();
   textFont("Courier New");
   console.log("tilemap editor - beta");
-
+  createEventToolbar();
   gDrawHelper.setAppendingPath('../../');
 }
 
@@ -180,21 +219,32 @@ function createEvent(x, y) {
 }
 
 function createTeleport(x, y) {
+  eventToolbar.teleport.div.show();
+  flags.editing = true;
+  eventToolbar.teleport.create.mouseClicked(() => {
+    saveTeleport(x, y);
+    eventToolbar.teleport.div.hide();
+    flags.editing = true;
+  });
+}
+
+function saveTeleport(x, y) {
   let j = floor(x/level.tilesize);
   let i = floor(y/level.tilesize);
   let idx = level.size.x*i+j;
   if (level.eventlayer.data[idx] !== 0) return;
 
-  let toLevel = prompt("What level this door goes to?/n(close the prompt if to the same one)", 'yourWorld/anotherLevel');
-  let tilex = prompt("Please, enter the X coordinate of the tile on the map", '16');
-  let tiley = prompt("Please, enter the Y coordinate of the tile on the map", '10');
+  let toLevel = eventToolbar.teleport.id.value();
+  let tilex = parseInt(eventToolbar.teleport.tx.value());
+  let tiley = parseInt(eventToolbar.teleport.ty.value());
+
   let teleport = {
     type: EVENTS.TELEPORT,
     data: {
       level: {
         id: (toLevel === null || toLevel === "") ? null : toLevel,
-        tx: (tilex === null || tilex === "") ? 8 : parseInt(tilex), // TODO: change events handling to read tx and ty
-        ty: (tiley === null || tiley === "") ? 8 : parseInt(tiley)
+        tx: (tilex === null || tilex === "") ? 8 : tilex, // TODO: change events handling to read tx and ty
+        ty: (tiley === null || tiley === "") ? 8 : tiley
       }
     }
   };
@@ -202,14 +252,23 @@ function createTeleport(x, y) {
 }
 
 function createCrabocop(x, y) {
-  let entDir = prompt("Please enter the initial direction/n( left = -1; right = 1)", '1');
+  eventToolbar.crabocop.div.show();
+  flags.editing = true;
+  eventToolbar.crabocop.create.mouseClicked(() => {
+    saveCrabocop(x, y);
+    eventToolbar.crabocop.div.hide();
+    flags.editing = true;
+  });
+}
+
+function saveCrabocop(x, y) {
+  let entDir = parseInt(eventToolbar.crabocop.dir.value());
   let crabocop = {
     type: EVENTS.SPAWN.CRABOCOP,
     data: {
       px: x + pxoff,
       py: y + pyoff,
-      dir: (entDir === null || entDir === "" || entDir !== '-1' || entDir !== '1') ? 1 : parseInt(entDir),
-
+      dir: (entDir === null || entDir !== -1 || entDir !== -1) ? 1 : entDir,
       wid: 16, // TODO: very bad style
       hei: 16
     }

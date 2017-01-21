@@ -241,6 +241,7 @@ class GameSystem { // a class for handling interactions between objects
     this.teleportEntity(this.player, px, py);
 
     for (let ent of level.entities) {
+      ent.killed = false;
       this.spawnMover(ent);
     }
   }
