@@ -28,5 +28,7 @@ You can play it on the [game's itch.io page](https://qw8.itch.io/limm), or you c
   - [ ] Add a soundtrack (I'm thinking of a light bossa-nova vibe)
   - [ ] Add the ability to transition between levels without doors
   - [ ] Add more types of tiles
+  - [ ] Add a mouse/touch screen support
+  - [ ] Add a "secrects found" counter
   - [ ] Add the abillity to transform player into a dog (?)
   
