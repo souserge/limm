@@ -35,6 +35,10 @@ class Crabocop extends Mover {
     let p = gGameSystem.player;
     if (gCollideManager.rectRect(p.posX, p.posY, p.wid, p.hei, this.posX, this.posY, this.wid, this.hei)) {
       if (this.prevPosY > p.prevPosY+p.hei*0.5) {
+        gAssetLoader.load(["./assets/sfx/crabocop_killed.wav"], (snd) => {
+          snd.playMode('restart');
+          snd.play();
+        });
         this.killed = true;
         p.velY *= -1;
       } else {

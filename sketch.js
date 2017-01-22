@@ -3,6 +3,9 @@ let gGameSystem;
 let gPreloadDone = false;
 let assetList = [
   "./assets/sfx/player_jump.wav",
+  "./assets/sfx/player_killed.wav",
+  "./assets/sfx/crabocop_killed.wav",
+  "./assets/sfx/door_open.wav",
   './assets/sprites/player.png',
   "./assets/sprites/crabocop.png",
   './assets/sprites/vantus.png'

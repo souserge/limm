@@ -57,8 +57,12 @@ class GameSystem { // a class for handling interactions between objects
     }
     this.player.update(dt);
     this.killOutOfBoundMover(this.player);
-    
+
     if (this.player.killed) {
+      gAssetLoader.load(["./assets/sfx/player_killed.wav"], (snd) => {
+        snd.playMode('restart');
+        snd.play();
+      });
       this.setRestartGame();
     }
   }
@@ -221,6 +225,10 @@ class GameSystem { // a class for handling interactions between objects
     if (res && res !== false && this.input.action.pressed) {
       switch(res.type) {
         case EVENTS.TELEPORT:
+          gAssetLoader.load(["./assets/sfx/door_open.wav"], (snd) => {
+            snd.playMode('restart');
+            snd.play();
+          });
           if (res.data.level.id !== null) {
             this.changeLevel(res.data.level.id, (level) => {
               let px = (res.data.level.tx + level.offset.x)*level.tilesize;
