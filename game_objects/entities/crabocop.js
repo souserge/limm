@@ -34,7 +34,7 @@ class Crabocop extends Mover {
   checkPlayerCollision() {
     let p = gGameSystem.player;
     if (gCollideManager.rectRect(p.posX, p.posY, p.wid, p.hei, this.posX, this.posY, this.wid, this.hei)) {
-      if (this.posY > p.posY + p.hei*0.5) {
+      if (this.prevPosY > p.prevPosY+p.hei*0.5) {
         this.killed = true;
         p.velY *= -1;
       } else {

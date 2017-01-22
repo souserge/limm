@@ -41,7 +41,7 @@ function windowResized() {
 }
 
 function restartSketch() {
-    gGameSystem.setStartLevel('world_0/test');
+    gGameSystem.setStartLevel('tutorial/01');
 }
 
 function draw() {

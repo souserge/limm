@@ -23,6 +23,9 @@
   }
 
   updatePos(dt) {
+    this.prevPosX = this.posX;
+    this.prevPosY = this.posY;
+
     this.isGrounded = gGameSystem.level.wallCollision(this.posX, this.posY + this.hei, this.wid, 1);
     if (gGameSystem.level.wallCollision(this.posX + this.velX, this.posY, this.wid, this.hei)) {
       let preventer = 0;

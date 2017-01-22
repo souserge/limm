@@ -57,6 +57,7 @@ class GameSystem { // a class for handling interactions between objects
     }
     this.player.update(dt);
     this.killOutOfBoundMover(this.player);
+    
     if (this.player.killed) {
       this.setRestartGame();
     }
