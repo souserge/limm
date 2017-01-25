@@ -1,0 +1,100 @@
+@font-face {
+    font-family: c64;
+    src: url('c64.ttf');
+}
+
+body, p, h1, h2, h3, ul, li, a, canvas {
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+
+body {
+
+  background-color: #000;
+  font-family: "Courier New";
+  color: #ff9696;
+}
+
+a {
+  color: #c864c8;
+  text-decoration: none;
+}
+
+#menu {
+  /*display: none;*/
+  padding: 0;
+  border: 0;
+  margin: auto;
+  /*background-color: #140028;*/
+  /*background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../media/junspeed.gif');*/
+  font-family: c64, "Courier New";
+  color: #ff9696;
+  width: 720;
+  height: 480;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#stars {
+  position: apsolute;
+  z-index: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#logo {
+  margin: 40px 0 40px 0;
+  max-height: 140px;
+  text-align: center;
+  font-size: 144px;
+  color: #C864C8;
+}
+
+nav {
+  margin: auto;
+  text-align: center;
+  width: 80%;
+}
+
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+nav ul li {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+
+nav ul li a {
+  display: block;
+  border: hidden;
+  padding: 10px;
+  text-transform: lowercase;
+}
+
+nav ul li a:hover {
+  text-transform: uppercase;
+}
+
+nav ul li a:hover:before {
+  content: "~";
+}
+
+nav ul li a:hover:after {
+  content: "~";
+}
+
+.incomplete:after {
+  content: "(beta)"
+}
+
+.incomplete:hover:after {
+  content: "~ (beta)"
+}
