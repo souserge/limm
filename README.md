@@ -9,7 +9,7 @@ You can play it on the [game's itch.io page](https://qw8.itch.io/limm), or you c
  * [p5.js](https://p5js.org/) library for basic canvas manipulation and event handling.
  * [FileSaver.js](https://github.com/eligrey/FileSaver.js) and [jQuery](https://github.com/jquery/jquery) for the level editor.
 
-## softwave used:
+## software used:
  * [bfxr](http://www.bfxr.net/) for creating sounds.
  * [piskel](http://www.piskelapp.com/) for sprites.
 
@@ -33,8 +33,8 @@ You can play it on the [game's itch.io page](https://qw8.itch.io/limm), or you c
   - [ ] Add the abillity to transform player into a dog (?)
   
   
-  
- ### Some tools for web game dev
+
+### Some tools for web game dev
   * __textures, tilemaps, sprites__
     * [OGMO Editor](http://www.ogmoeditor.com/)
     * [Krita](https://krita.org/en/)
