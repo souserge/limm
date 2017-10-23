@@ -1,9 +1,9 @@
 # limm
  A simple game made for [MyFirstGameJam: Winter 2017](https://itch.io/jam/my-first-game-jam-winter-2017/) edition. It's written in JavaScript using HTML5 canvas.
  
-You can play it on the [game's itch.io page](https://qw8.itch.io/limm), or you can test the [latest commited version](https://qw8.github.io/limm_MyFirstGameJam/).
+You can play it on the [game's itch.io page](https://souserge.itch.io/limm), or you can test the [latest commited version](https://souserge.github.io/limm/).
  
- The repo also has a [level editor](https://qw8.github.io/limm_MyFirstGameJam/tools/tilemap_editor/index.html), but it is cumbersome to use and the UI is outright awful.
+ The repo also has a [level editor](https://souserge.github.io/limm/tools/tilemap_editor/index.html), but it is cumbersome to use and the UI is outright awful.
  
 ## limm uses:
  * [p5.js](https://p5js.org/) library for basic canvas manipulation and event handling.
